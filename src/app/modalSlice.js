@@ -4,6 +4,7 @@ export const modalSlice = createSlice({
   name: 'modal',
   initialState: {
     isShown: false,
+    data: []
   },
   reducers: {
     toggleModal: (state) => {
@@ -12,12 +13,15 @@ export const modalSlice = createSlice({
       // which detects changes to a 'draft state' and produces a brand new
       // immutable state based off those changes.
       // Also, no return statement is required from these functions.
-      state.isShown = !state.isShown
+      state.isShown = !state.isShown;
+    },
+    storeData: (state, data) => {
+      state.data = data.payload;
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { toggleModal } = modalSlice.actions;
+export const { toggleModal, storeData } = modalSlice.actions;
 
 export default modalSlice.reducer;

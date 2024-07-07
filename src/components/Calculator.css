@@ -19,10 +19,6 @@
   display: block;
 }
 
-.modalSubmit {
-  margin: 10px auto 0;
-}
-
 form {
   width: max-content;
   margin: auto;
@@ -111,6 +107,7 @@ label + * {
 }
 
 .btn.submit,
+.btn.cancel,
 .btn.back {
   margin: 30px auto 0;
   width: 100%;

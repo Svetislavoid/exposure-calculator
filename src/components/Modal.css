@@ -1,9 +1,17 @@
-.modal {
-  /* display: none; */
+.modalOverlay {
   position: fixed;
-  top: 100px;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.2);
+  background-blend-mode: soft-light;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   width: 550px;
   padding: 50px;
   border: 2px solid #666;
@@ -11,15 +19,39 @@
   z-index: 100;
 }
 
-.modal.on {
-  display: block;
-}
-
 .modal label {
   width: 72%;
 }
 
-.modal input:not(.modalSubmit) {
+.modal input {
   margin-bottom: 20px;
   width: 26%;
+}
+
+.buttons {
+  margin: 10px auto 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.btn.modalSubmit {
+  background-color: #393;
+  color: #fff;
+}
+
+.btn.modalCancel {
+  background-color: #d33;
+  color: #fff;
+}
+
+.btn.modalSubmit:hover {
+  background-color: #171;
+}
+
+.btn.modalCancel:hover {
+  background-color: #b11;
+}
+
+.modal form {
+  width: unset;
 }

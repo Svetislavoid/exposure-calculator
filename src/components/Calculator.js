@@ -1,26 +1,47 @@
 import { useDispatch } from 'react-redux';
 import { Form, Field } from 'react-final-form';
-import { toggleModal } from '../app/modalSlice';
+import { toggleModal, storeData } from '../app/modalSlice';
+import { required, mustBeNumber, minValue, composeValidators } from '../utils/functions';
 
 import './Calculator.css';
 
 const Calculator = () => {
   const dispatch = useDispatch();
 
+  const customFields = {
+    telescope: [
+      {name: 'diameter', label: 'Telescope diameter (m):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]},
+      {name: 'focalLength', label: 'Telescope focal length (m):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]},
+      {name: 'effectiveArea', label: 'Effective area of main mirror (%):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]}
+    ],
+    reducer: [
+      {name: 'reducer', label: 'Reducer:', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]}
+    ],
+    ccd: [
+      {name: 'readOutNoise', label: 'CCD read-out noise (e<sup>-</sup>/pix):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]},
+      {name: 'darkCurrent', label: 'CCD dark current (e<sup>-</sup>/s/pix):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]},
+      {name: 'pixelSize', label: 'CCD pixel size (&#181;m):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]},
+      {name: 'quantumEfficiency', label: 'CCD quantum efficiency (%):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}, {name: 'maxValue', param: 100}]}
+    ],
+    binning: [
+      {name: 'binning', label: 'Binning:', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]}
+    ],
+    filter: [
+      {name: 'wavelength', label: 'Filter mean wavelength (&#8491;):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]},
+      {name: 'bandwidth', label: 'Filter bandwidth (&#8491;):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]},
+      {name: 'flux', label: 'Zero magnitude flux (photon/s/cm<sup>2</sup>/&#8491;):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]},
+      {name: 'extinctionCoefficient', label: 'Extinction coefficient (mag/airmass):', inputType: 'input', validators: ['required', 'mustBeNumber', {name: 'minValue', param: 0}]}
+    ]
+  };
+
   const handleCustomValue = (e) => {
+    console.log(e);
     const customModalname = e.target.name;
     if (e.target.value === 'custom') {
       dispatch(toggleModal());
+      dispatch(storeData(customFields[customModalname]));
     }
-  }
-
-  const required = value => (value ? undefined : 'Required');
-  const mustBeNumber = value => (isNaN(value) ? 'Must be a number' : undefined)
-  const minValue = min => value =>
-    isNaN(value) || value >= min ? undefined : `Should be greater than ${min}`
-  const composeValidators = (...validators) => value =>
-    validators.reduce((error, validator) => error || validator(value), undefined)
-
+  };
 
   const onSubmit = (values) => {
     console.log({values});
@@ -231,8 +252,9 @@ const Calculator = () => {
             </div>
           </fieldset>
         </form>
-    )}
-  />);
+      )}
+    />
+  );
 }
 
 export default Calculator;

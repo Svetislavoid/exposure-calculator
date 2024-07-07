@@ -6,13 +6,14 @@ import Calculator from './components/Calculator';
 import Footer from './components/Footer';
 
 const App = () => {
-  const isShown = useSelector((state) => state.modal.isShown);
+  const isModalShown = useSelector((state) => state.modal.isShown);
+  const modalData = useSelector((state) => state.modal.data);
 
   return (
     <div className='app'>
+      { isModalShown && <Modal data={modalData} /> }
       <Header />
       <main className='appMain'>
-        { isShown && <Modal /> }
         <Calculator />
       </main>
       <Footer />
