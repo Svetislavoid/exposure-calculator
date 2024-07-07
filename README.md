@@ -2,8 +2,8 @@
 
 Live preview: https://svetislavoid.github.io/kalkulator-ekspozicije/
 
-![Exposure time calculator form](/img/exposureTimeCalculator1.png)
-![Exposure time calculator results](/img/exposureTimeCalculator2.png)
+![Exposure time calculator form](/src/img/exposureTimeCalculator1.png)
+![Exposure time calculator results](/src/img/exposureTimeCalculator2.png)
 
 ## About the calculator
 
@@ -23,23 +23,23 @@ When using custom CCD, to get the best results enter quantum efficiency of the C
 
 Calculator uses the following equation to calculate signal-to-noise ratio (SNR):
 
-![Signal to noise ratio](/img/snr.png)
+![Signal to noise ratio](/src/img/snr.png)
 
 From this equation we get an expression for exposure time:
 
-![Exposure time](/img/exposure.png)
+![Exposure time](/src/img/exposure.png)
 
 where S<sub>dc</sub> and S<sub>ro</sub> are camera dark current and read out noise values, respectively.
 
 Counts from the object, counts from the sky and number of pixels in the aperture are calculated as:
 
-![Counts from the object](/img/objectSignal.png)
-![Counts from the sky](/img/skySignal.png)
-![Number of pixels in the aperture](/img/pixelNo.png)
+![Counts from the object](/src/img/objectSignal.png)
+![Counts from the sky](/src/img/skySignal.png)
+![Number of pixels in the aperture](/src/img/pixelNo.png)
 
 where
 
-![Camera resolution](/img/scale.png)
+![Camera resolution](/src/img/scale.png)
 
 is camera resolution.
 
