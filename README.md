@@ -1,6 +1,6 @@
 # Exposure time calculator
 
-Live preview: https://svetislavoid.github.io/kalkulator-ekspozicije/
+Live preview, to be available soon at: https://svetislavoid.github.io/exposure-calculator-react/
 
 ![Exposure time calculator form](/src/img/exposureTimeCalculator1.png)
 ![Exposure time calculator results](/src/img/exposureTimeCalculator2.png)
