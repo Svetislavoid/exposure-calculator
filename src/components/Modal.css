@@ -1,0 +1,25 @@
+.modal {
+  /* display: none; */
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 550px;
+  padding: 50px;
+  border: 2px solid #666;
+  background: #fff;
+  z-index: 100;
+}
+
+.modal.on {
+  display: block;
+}
+
+.modal label {
+  width: 72%;
+}
+
+.modal input:not(.modalSubmit) {
+  margin-bottom: 20px;
+  width: 26%;
+}

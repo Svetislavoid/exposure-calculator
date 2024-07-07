@@ -1,23 +1,21 @@
-import logo from './logo.svg';
+import { useSelector } from 'react-redux';
 import './App.css';
+import Header from './components/Header';
+import Modal from './components/Modal';
+import Calculator from './components/Calculator';
+import Footer from './components/Footer';
 
-function App() {
+const App = () => {
+  const isShown = useSelector((state) => state.modal.isShown);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='app'>
+      <Header />
+      <main className='appMain'>
+        { isShown && <Modal /> }
+        <Calculator />
+      </main>
+      <Footer />
     </div>
   );
 }
