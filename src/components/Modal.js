@@ -4,7 +4,7 @@ import { toggleModal } from '../app/modalSlice';
 import { required, mustBeNumber, minValue, maxValue, composeValidators } from '../utils/functions';
 import './Modal.css';
 
-const Modal = ({data}) => {
+const Modal = ({customFieldsConfig}) => {
   const dispatch = useDispatch();
 
   const onSubmit = (values) => {
@@ -32,7 +32,7 @@ const Modal = ({data}) => {
             <form onSubmit={handleSubmit}>
               <div className='form'>
                 {
-                  data.map(({name, label, inputType, validators}) => {
+                  customFieldsConfig.map(({name, label, inputType, validators}) => {
                     const validatorFunctions = validators.map((validator) => {
                       return validator.name ? validationFunctions[validator.name](validator.param) : validationFunctions[validator];
                     });

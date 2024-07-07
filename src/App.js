@@ -7,11 +7,11 @@ import Footer from './components/Footer';
 
 const App = () => {
   const isModalShown = useSelector((state) => state.modal.isShown);
-  const modalData = useSelector((state) => state.modal.data);
+  const customFieldsConfig = useSelector((state) => state.modal.customFieldsConfig);
 
   return (
     <div className='app'>
-      { isModalShown && <Modal data={modalData} /> }
+      { isModalShown && <Modal customFieldsConfig={customFieldsConfig} /> }
       <Header />
       <main className='appMain'>
         <Calculator />

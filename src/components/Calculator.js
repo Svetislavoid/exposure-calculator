@@ -1,11 +1,24 @@
+import { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Form, Field } from 'react-final-form';
-import { toggleModal, storeData } from '../app/modalSlice';
+import { toggleModal, setCustomFieldsConfig } from '../app/modalSlice';
 import { required, mustBeNumber, minValue, composeValidators } from '../utils/functions';
 
 import './Calculator.css';
 
 const Calculator = () => {
+  const [currentValues, setCurrentValues] = useState({
+    telescope: 'cassegrain',
+    reducer: 1,
+    ccd: 'iXon897',
+    binning: 1,
+    filter: 'B'
+  });
+  const telescopeRef = useRef(null);
+  const reducerRef = useRef(null);
+  const ccdRef = useRef(null);
+  const binningRef = useRef(null);
+  const filterRef = useRef(null);
   const dispatch = useDispatch();
 
   const customFields = {
@@ -34,17 +47,66 @@ const Calculator = () => {
     ]
   };
 
-  const handleCustomValue = (e) => {
-    console.log(e);
-    const customModalname = e.target.name;
-    if (e.target.value === 'custom') {
+  const STRING_TYPE = 'string';
+  const NUMBER_TYPE = 'number';
+
+  const types = {
+    object: STRING_TYPE,
+    telescope: STRING_TYPE,
+    reducer: NUMBER_TYPE,
+    ccd: STRING_TYPE,
+    binning: NUMBER_TYPE,
+    filter: STRING_TYPE,
+    transparency: NUMBER_TYPE,
+    airmass: NUMBER_TYPE,
+    skyBrightness: NUMBER_TYPE,
+    seeing: NUMBER_TYPE,
+    aperture: NUMBER_TYPE,
+    magnitude: NUMBER_TYPE,
+    signalToNoise: NUMBER_TYPE
+  };
+
+  const parseTypes = (values) => {
+    const parsedValues = {...values};
+    Object.entries(values).forEach(([key, value]) => {
+      if (types[key] === NUMBER_TYPE) {
+        parsedValues[key] = parseFloat(value);
+      }
+    });
+
+    return parsedValues;
+  };
+
+  const handleFieldChange = (e) => {
+    const fieldName = e.target.name;
+    const fieldValue = e.target.value;
+
+    console.log(binningRef);
+
+    binningRef.current.value = 2;
+
+    if (fieldValue === 'custom') {
+      console.log(currentValues);
       dispatch(toggleModal());
-      dispatch(storeData(customFields[customModalname]));
+      dispatch(setCustomFieldsConfig(customFields[fieldName]));
     }
   };
 
   const onSubmit = (values) => {
-    console.log({values});
+    const parsedValues = parseTypes(values);
+    console.log({parsedValues});
+  };
+
+  const storeCurrentValue = (e) => {
+    const fieldName = e.target.name;
+    const fieldValue = e.target.value;
+
+    setCurrentValues((currentValues) => {
+      return {
+        ...currentValues,
+        [fieldName]: fieldValue
+      }
+    })
   };
 
   return (
@@ -66,7 +128,7 @@ const Calculator = () => {
         signalToNoise: ''
       }}
       render={({ handleSubmit }) => (
-        <form onSubmit={handleSubmit} onChange={handleCustomValue}>
+        <form onSubmit={handleSubmit} onChange={handleFieldChange}>
           <fieldset>
             <legend>Exposure time calculator</legend>
 
@@ -81,7 +143,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>Telescope:</label>
-                <Field name='telescope' component='select'>
+                <Field name='telescope' component='select' ref={telescopeRef} onClick={storeCurrentValue}>
                   <option value='cassegrain'>60cm Cassegrain</option>
                   <option value='nasmyth'>1.4m Milankovic</option>
                   <option value='custom' className='customTelescope'>Custom telescope</option>
@@ -90,7 +152,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>Reducer:</label>
-                <Field name='reducer' component='select'>
+                <Field name='reducer' component='select' ref={reducerRef} onClick={storeCurrentValue}>
                   <option value='1'>none</option>
                   <option value='0.64'>0.64x</option>
                   <option value='0.5'>0.5x</option>
@@ -100,7 +162,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>CCD:</label>
-                <Field name='ccd' component='select'>
+                <Field name='ccd' component='select' ref={ccdRef} onClick={storeCurrentValue}>
                   <option value='iXon897'>ANDOR iXon 897</option>
                   <option value='iKonL936'>Andor iKon-L 936</option>
                   <option value='sbigstxl6303e'>SBIG STXL-6303E</option>
@@ -111,7 +173,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>CCD binning:</label>
-                <Field name='binning' component='select'>
+                <Field name='binning' component='select' ref={binningRef} onClick={storeCurrentValue}>
                   <option value='1'>1x1</option>
                   <option value='2'>2x2</option>
                   <option value='3'>3x3</option>
@@ -123,7 +185,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>Band:</label>
-                <Field name='filter' component='select'>
+                <Field name='filter' component='select' ref={filterRef} onClick={storeCurrentValue}>
                   <option value='B'>B (4450 &#8491;)</option>
                   <option value='V'>V (5510 &#8491;)</option>
                   <option value='R'>R (6580 &#8491;)</option>

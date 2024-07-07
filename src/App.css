@@ -1,8 +1,3 @@
-.app {
-  max-width: 1300px;
-  min-width: 1020px;
-}
-
 .appMain {
   display: flex;
   flex-direction: column;

@@ -4,7 +4,7 @@ export const modalSlice = createSlice({
   name: 'modal',
   initialState: {
     isShown: false,
-    data: []
+    customFieldsConfig: []
   },
   reducers: {
     toggleModal: (state) => {
@@ -15,13 +15,13 @@ export const modalSlice = createSlice({
       // Also, no return statement is required from these functions.
       state.isShown = !state.isShown;
     },
-    storeData: (state, data) => {
-      state.data = data.payload;
+    setCustomFieldsConfig: (state, data) => {
+      state.customFieldsConfig = data.payload;
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { toggleModal, storeData } = modalSlice.actions;
+export const { toggleModal, setCustomFieldsConfig } = modalSlice.actions;
 
 export default modalSlice.reducer;
