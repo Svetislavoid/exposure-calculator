@@ -1,4 +1,3 @@
-import { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import { toggleModal, setCustomFieldsConfig } from '../app/modalSlice';
@@ -7,18 +6,6 @@ import { required, mustBeNumber, minValue, composeValidators } from '../utils/fu
 import './Calculator.css';
 
 const Calculator = () => {
-  const [currentValues, setCurrentValues] = useState({
-    telescope: 'cassegrain',
-    reducer: 1,
-    ccd: 'iXon897',
-    binning: 1,
-    filter: 'B'
-  });
-  const telescopeRef = useRef(null);
-  const reducerRef = useRef(null);
-  const ccdRef = useRef(null);
-  const binningRef = useRef(null);
-  const filterRef = useRef(null);
   const dispatch = useDispatch();
 
   const customFields = {
@@ -81,12 +68,7 @@ const Calculator = () => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
 
-    console.log(binningRef);
-
-    binningRef.current.value = 2;
-
     if (fieldValue === 'custom') {
-      console.log(currentValues);
       dispatch(toggleModal());
       dispatch(setCustomFieldsConfig(customFields[fieldName]));
     }
@@ -95,18 +77,6 @@ const Calculator = () => {
   const onSubmit = (values) => {
     const parsedValues = parseTypes(values);
     console.log({parsedValues});
-  };
-
-  const storeCurrentValue = (e) => {
-    const fieldName = e.target.name;
-    const fieldValue = e.target.value;
-
-    setCurrentValues((currentValues) => {
-      return {
-        ...currentValues,
-        [fieldName]: fieldValue
-      }
-    })
   };
 
   return (
@@ -143,7 +113,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>Telescope:</label>
-                <Field name='telescope' component='select' ref={telescopeRef} onClick={storeCurrentValue}>
+                <Field name='telescope' component='select'>
                   <option value='cassegrain'>60cm Cassegrain</option>
                   <option value='nasmyth'>1.4m Milankovic</option>
                   <option value='custom' className='customTelescope'>Custom telescope</option>
@@ -152,7 +122,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>Reducer:</label>
-                <Field name='reducer' component='select' ref={reducerRef} onClick={storeCurrentValue}>
+                <Field name='reducer' component='select'>
                   <option value='1'>none</option>
                   <option value='0.64'>0.64x</option>
                   <option value='0.5'>0.5x</option>
@@ -162,7 +132,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>CCD:</label>
-                <Field name='ccd' component='select' ref={ccdRef} onClick={storeCurrentValue}>
+                <Field name='ccd' component='select'>
                   <option value='iXon897'>ANDOR iXon 897</option>
                   <option value='iKonL936'>Andor iKon-L 936</option>
                   <option value='sbigstxl6303e'>SBIG STXL-6303E</option>
@@ -173,7 +143,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>CCD binning:</label>
-                <Field name='binning' component='select' ref={binningRef} onClick={storeCurrentValue}>
+                <Field name='binning' component='select'>
                   <option value='1'>1x1</option>
                   <option value='2'>2x2</option>
                   <option value='3'>3x3</option>
@@ -185,7 +155,7 @@ const Calculator = () => {
 
               <div className='parameters'>
                 <label>Band:</label>
-                <Field name='filter' component='select' ref={filterRef} onClick={storeCurrentValue}>
+                <Field name='filter' component='select'>
                   <option value='B'>B (4450 &#8491;)</option>
                   <option value='V'>V (5510 &#8491;)</option>
                   <option value='R'>R (6580 &#8491;)</option>
