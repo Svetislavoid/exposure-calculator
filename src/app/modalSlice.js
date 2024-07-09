@@ -3,8 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const modalSlice = createSlice({
   name: 'modal',
   initialState: {
-    isShown: false,
-    customFieldsConfig: []
+    isShown: false
   },
   reducers: {
     toggleModal: (state) => {
@@ -14,14 +13,11 @@ export const modalSlice = createSlice({
       // immutable state based off those changes.
       // Also, no return statement is required from these functions.
       state.isShown = !state.isShown;
-    },
-    setCustomFieldsConfig: (state, data) => {
-      state.customFieldsConfig = data.payload;
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { toggleModal, setCustomFieldsConfig } = modalSlice.actions;
+export const { toggleModal } = modalSlice.actions;
 
 export default modalSlice.reducer;
