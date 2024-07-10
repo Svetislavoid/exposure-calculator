@@ -11,6 +11,236 @@ const Calculator = () => {
   const [isCustomBinning, setIsCustomBinning] = useState(false);
   const [isCustomFilter, setIsCustomFilter] = useState(false);
 
+  const initialValues = {
+    object: 'point',
+    telescope: 'cassegrain',
+    reducer: '1',
+    ccd: 'iXon897',
+    binning: '1',
+    filter: 'B',
+    transparency: '',
+    airmass: '',
+    skyBrightness: '19',
+    seeing: '',
+    aperture: '',
+    magnitude: '',
+    signalToNoise: ''
+  };
+
+  const formFields = [
+    {
+      name: 'object',
+      component: 'select',
+      label: 'Object:',
+      options: [
+        { value: 'point', label: 'Point' },
+        { value: 'extended', label: 'Extended' }
+      ]
+    },
+    {
+      name: 'telescope',
+      component: 'select',
+      label: 'Telescope:',
+      options: [
+        { value: 'cassegrain', label: '60cm Cassegrain' },
+        { value: 'nasmyth', label: '1.4m Milankovic' },
+        { value: 'custom', label: 'Custom telescope' }
+      ],
+      customInputs: [
+        {
+          name: 'customTelescopeDiameter',
+          component: 'input',
+          label: 'Diameter (m):',
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        },
+        {
+          name: 'customTelescopeFocalLength',
+          component: 'input',
+          label: 'Focal length (m):',
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        },
+        {
+          name: 'customTelescopeEffectiveArea',
+          component: 'input',
+          label: 'Effective area of main mirror (%):',
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        }
+      ],
+      isCustomSelected: isCustomTelescope
+    },
+    {
+      name: 'reducer',
+      component: 'select',
+      label: 'Reducer:',
+      options: [
+        { value: '1', label: 'None' },
+        { value: '0.64', label: '0.64x' },
+        { value: '0.5', label: '0.5x' },
+        { value: 'custom', label: 'Custom reducer' }
+      ],
+      customInputs: [
+        {
+          name: 'customReducer',
+          component: 'input',
+          label: 'Custom reducer:',
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        }
+      ],
+      isCustomSelected: isCustomReducer
+    },
+    {
+      name: 'ccd',
+      component: 'select',
+      label: 'CCD:',
+      options: [
+        { value: 'iXon897', label: 'ANDOR iXon 897' },
+        { value: 'iKonL936', label: 'ANDOR iKon-L 936' },
+        { value: 'sbigstxl6303e', label: 'SBIG STXL-6303E' },
+        { value: 'ProLinePL23042', label: 'ProLine PL23042' },
+        { value: 'custom', label: 'Custom CCD' }
+      ],
+      customInputs: [
+        {
+          name: 'customReadOutNoise',
+          component: 'input',
+          label: <>Read-out noise (e<sup>-</sup>/pix):</>,
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        },
+        {
+          name: 'customDarkCurrent',
+          component: 'input',
+          label: <>Dark current (e<sup>-</sup>/s/pix):</>,
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        },
+        {
+          name: 'customPixelSize',
+          component: 'input',
+          label: <>Pixel size (&#181;m):</>,
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        },
+        {
+          name: 'customQuantumEfficiency',
+          component: 'input',
+          label: 'Quantum efficiency (%):',
+          validation: composeValidators(required, mustBeNumber, minValue(0), maxValue(100))
+        }
+      ],
+      isCustomSelected: isCustomCCD
+    },
+    {
+      name: 'binning',
+      component: 'select',
+      label: 'CCD binning:',
+      options: [
+        { value: '1', label: '1x1' },
+        { value: '2', label: '2x2' },
+        { value: '3', label: '3x3' },
+        { value: '4', label: '4x4' },
+        { value: '5', label: '5x5' },
+        { value: 'custom', label: 'Custom binning' }
+      ],
+      customInputs: [
+        {
+          name: 'customBinning',
+          component: 'input',
+          label: 'Custom binning:',
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        }
+      ],
+      isCustomSelected: isCustomBinning
+    },
+    {
+      name: 'filter',
+      component: 'select',
+      label: 'Band:',
+      options: [
+        { value: 'B', label: <>B (4450 &#8491;)</> },
+        { value: 'V', label: <>V (5510 &#8491;)</> },
+        { value: 'R', label: <>R (6580 &#8491;)</> },
+        { value: 'I', label: <>I (8060 &#8491;)</> },
+        { value: 'L', label: <>L (35000 &#8491;)</> },
+        { value: 'Ha', label: <>H&alpha; (6563 &#8491;)</> },
+        { value: 'Red-continuum', label: <>Red-continuum (6452 &#8491;)</> },
+        { value: '[SII]', label: <>[SII] (6716 &#8491;)</> },
+        { value: 'G', label: <>G (4770 &#8491;)</> },
+        { value: 'R1', label: <>R (6231 &#8491;)</> },
+        { value: 'I1', label: <>I (7625 &#8491;)</> },
+        { value: 'ZS', label: <>ZS (8930 &#8491;)</> },
+        { value: 'Y', label: <>Y (10200 &#8491;)</> },
+        { value: 'custom', label: 'Custom band' }
+      ],
+      customInputs: [
+        {
+          name: 'customWavelength',
+          component: 'input',
+          label: <>Mean wavelength (&#8491;):</>,
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        },
+        {
+          name: 'customBandwidth',
+          component: 'input',
+          label: <>Bandwidth (&#8491;):</>,
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        },
+        {
+          name: 'customFlux',
+          component: 'input',
+          label: <>Zero magnitude flux (photon/s/cm<sup>2</sup>/&#8491;):</>,
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        },
+        {
+          name: 'customExtinctionCoefficient',
+          component: 'input',
+          label: <>Extinction coefficient (mag/airmass):</>,
+          validation: composeValidators(required, mustBeNumber, minValue(0))
+        }
+      ],
+      isCustomSelected: isCustomFilter
+    },
+    {
+      name: 'transparency',
+      component: 'input',
+      label: 'Total transparency on all optical elements:',
+      validation: composeValidators(required, mustBeNumber, minValue(0))
+    },
+    {
+      name: 'airmass',
+      component: 'input',
+      label: 'Airmass:',
+      validation: composeValidators(required, mustBeNumber, minValue(0))
+    },
+    {
+      name: 'skyBrightness',
+      component: 'input',
+      label: <>Sky brightness (mag/arcsec<sup>2</sup>):</>,
+      validation: composeValidators(required, mustBeNumber, minValue(0))
+    },
+    {
+      name: 'seeing',
+      component: 'input',
+      label: 'Seeing (FWHM in arcsec):',
+      validation: composeValidators(required, mustBeNumber, minValue(0))
+    },
+    {
+      name: 'aperture',
+      component: 'input',
+      label: 'Radius for photometry (arcsec):',
+      validation: composeValidators(required, mustBeNumber, minValue(0))
+    },
+    {
+      name: 'magnitude',
+      component: 'input',
+      label: 'Magnitude:',
+      validation: composeValidators(required, mustBeNumber, minValue(0))
+    },
+    {
+      name: 'signalToNoise',
+      component: 'input',
+      label: 'S/N:',
+      validation: composeValidators(required, mustBeNumber, minValue(0))
+    }
+  ];
+
   const STRING_TYPE = 'string';
   const NUMBER_TYPE = 'number';
 
@@ -85,305 +315,73 @@ const Calculator = () => {
     console.log({parsedValues});
   };
 
+  const renderInputField = (field) => {
+    const { name, label, component, validation } = field;
+
+    return (
+      <Field className={name} name={name} key={name} component={component} validate={validation}>
+        {({ input, meta }) => (
+          <>
+            <label>{label}</label>
+            <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
+          </>
+        )}
+      </Field>
+    );
+  };
+
+  const renderSelectField = (field) => {
+    const { name, label, component, options, customInputs, isCustomSelected } = field;
+
+    return (
+      <>
+        <label>{label}</label>
+        <Field name={name} component={component}>
+          {
+            options.map((option) => {
+              const { value, label } = option;
+
+              return (
+                <option value={value} key={value}>{label}</option>
+              );
+            })
+          }
+        </Field>
+        {
+          isCustomSelected && customInputs.map((customInputField) => {
+            return renderInputField(customInputField);
+          })
+        }
+      </>
+    );
+  };
+
   return (
     <Form
       onSubmit={onSubmit}
-      initialValues={{
-        object: 'point',
-        telescope: 'cassegrain',
-        reducer: '1',
-        ccd: 'iXon897',
-        binning: '1',
-        filter: 'B',
-        transparency: '',
-        airmass: '',
-        skyBrightness: '19',
-        seeing: '',
-        aperture: '',
-        magnitude: '',
-        signalToNoise: ''
-      }}
+      initialValues={initialValues}
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit} onChange={handleFieldChange}>
           <fieldset>
             <legend>Exposure time calculator</legend>
 
             <div className='form'>
-              <div className='parameters'>
-                <label>Object:</label>
-                <Field name='object' component='select'>
-                  <option value='point'>Point</option>
-                  <option value='extended'>Extended</option>
-                </Field>
-              </div>
+              {
+                formFields.map((field) => {
+                  const { name, component } = field;
 
-              <div className='parameters'>
-                <label>Telescope:</label>
-                <Field name='telescope' component='select'>
-                  <option value='cassegrain'>60cm Cassegrain</option>
-                  <option value='nasmyth'>1.4m Milankovic</option>
-                  <option value='custom' className='customTelescope'>Custom telescope</option>
-                </Field>
-                {
-                  isCustomTelescope &&
-                  <div className='customTelescope'>
-                    <Field name='customTelescopeDiameter' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Diameter (m):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                    <Field name='customTelescopeFocalLength' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Focal length (m):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                    <Field name='customTelescopeEffectiveArea' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Effective area of main mirror (%):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                  </div>
-                }
-              </div>
-
-              <div className='parameters'>
-                <label>Reducer:</label>
-                <Field name='reducer' component='select'>
-                  <option value='1'>none</option>
-                  <option value='0.64'>0.64x</option>
-                  <option value='0.5'>0.5x</option>
-                  <option value='custom' className='customReducer'>Custom reducer</option>
-                </Field>
-                {
-                  isCustomReducer &&
-                  <div className='customReducer'>
-                    <Field name='customReducer' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Custom reducer:</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                  </div>
-                }
-              </div>
-
-              <div className='parameters'>
-                <label>CCD:</label>
-                <Field name='ccd' component='select'>
-                  <option value='iXon897'>ANDOR iXon 897</option>
-                  <option value='iKonL936'>Andor iKon-L 936</option>
-                  <option value='sbigstxl6303e'>SBIG STXL-6303E</option>
-                  <option value='ProLinePL23042'>ProLine PL23042</option>
-                  <option value='custom' className='customCCD'>Custom CCD</option>
-                </Field>
-                {
-                  isCustomCCD &&
-                  <div className='customCCD'>
-                    <Field name='customReadOutNoise' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Read-out noise (e<sup>-</sup>/pix):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                    <Field name='customDarkCurrent' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Dark current (e<sup>-</sup>/s/pix):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                    <Field name='customPixelSize' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Pixel size (&#181;m):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                    <Field name='customQuantumEfficiency' validate={composeValidators(required, mustBeNumber, minValue(0), maxValue(100))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Quantum efficiency (%):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                  </div>
-                }
-              </div>
-
-              <div className='parameters'>
-                <label>CCD binning:</label>
-                <Field name='binning' component='select'>
-                  <option value='1'>1x1</option>
-                  <option value='2'>2x2</option>
-                  <option value='3'>3x3</option>
-                  <option value='4'>4x4</option>
-                  <option value='5'>5x5</option>
-                  <option value='custom' className='customBinning'>Custom binning</option>
-                </Field>
-                {
-                  isCustomBinning &&
-                  <div className='customBinning'>
-                    <Field name='customBinning' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Custom binning::</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                  </div>
-                }
-              </div>
-
-              <div className='parameters'>
-                <label>Band:</label>
-                <Field name='filter' component='select'>
-                  <option value='B'>B (4450 &#8491;)</option>
-                  <option value='V'>V (5510 &#8491;)</option>
-                  <option value='R'>R (6580 &#8491;)</option>
-                  <option value='I'>I (8060 &#8491;)</option>
-                  <option value='L'>L (35000 &#8491;)</option>
-                  <option value='Ha'>H&alpha; (6563 &#8491;)</option>
-                  <option value='Red-continuum'>Red-continuum (6452 &#8491;)</option>
-                  <option value='[SII]'>[SII] (6716 &#8491;)</option>
-                  <option value='G'>G (4770 &#8491;)</option>
-                  <option value='R1'>R (6231 &#8491;)</option>
-                  <option value='I1'>I (7625 &#8491;)</option>
-                  <option value='ZS'>ZS (8930 &#8491;)</option>
-                  <option value='Y'>Y (10200 &#8491;)</option>
-                  <option value='custom' className='customBand'>Custom band</option>
-                </Field>
-                {
-                  isCustomFilter &&
-                  <div className='customFisCustomFilter'>
-                    <Field name='customWavelength' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Mean wavelength (&#8491;):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                    <Field name='customBandwidth' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Bandwidth (&#8491;):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                    <Field name='customFlux' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Zero magnitude flux (photon/s/cm<sup>2</sup>/&#8491;):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                    <Field name='customExtinctionCoefficient' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                      {({ input, meta }) => (
-                        <>
-                          <label>Extinction coefficient (mag/airmass):</label>
-                          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                        </>
-                      )}
-                    </Field>
-                  </div>
-                }
-              </div>
-
-              <div className='parameters'>
-                <Field className='transparency' name='transparency' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                  {({ input, meta }) => (
-                    <>
-                      <label>Total transparency on all optical elements:</label>
-                      <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                    </>
-                  )}
-                </Field>
-              </div>
-
-              <div className='parameters'>
-                <Field className='airmass' name='airmass' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                  {({ input, meta }) => (
-                    <>
-                      <label>Airmass:</label>
-                      <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                    </>
-                  )}
-                </Field>
-              </div>
-
-              <div className='parameters'>
-                <Field className='skyBrightness' name='skyBrightness' component='input' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                  {({ input, meta }) => (
-                    <>
-                      <label>Sky brightness (mag/arcsec<sup>2</sup>):</label>
-                      <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                    </>
-                  )}
-                </Field>
-              </div>
-
-              <div className='parameters'>
-                <Field className='seeing' name='seeing' component='input' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                  {({ input, meta }) => (
-                    <>
-                      <label>Seeing (FWHM in arcsec):</label>
-                      <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                    </>
-                  )}
-                </Field>
-              </div>
-
-              <div className='parameters'>
-                <Field className='aperture' name='aperture' component='input' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                  {({ input, meta }) => (
-                    <>
-                      <label>Radius for photometry (arcsec):</label>
-                      <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                    </>
-                  )}
-                </Field>
-              </div>
-
-              <div className='parameters'>
-                <Field className='magnitude' name='magnitude' component='input' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                  {({ input, meta }) => (
-                    <>
-                      <label>Magnitude:</label>
-                      <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                    </>
-                  )}
-                </Field>
-              </div>
-
-              <div className='parameters'>
-                <Field className='signalToNoise' name='signalToNoise' component='input' validate={composeValidators(required, mustBeNumber, minValue(0))}>
-                  {({ input, meta }) => (
-                    <>
-                      <label>S/N:</label>
-                      <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-                    </>
-                  )}
-                </Field>
-              </div>
+                  return (
+                    <div className='parameters' key={name}>
+                      {
+                        component === 'input' && renderInputField(field)
+                      }
+                      {
+                        component === 'select' && renderSelectField(field)
+                      }
+                    </div>
+                  )
+                })
+              }
 
               <button type='submit' className='btn submit'>Calculate</button>
             </div>
