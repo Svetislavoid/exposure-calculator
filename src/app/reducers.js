@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const modalSlice = createSlice({
-  name: 'modal',
+export const reducers = createSlice({
+  name: 'global',
   initialState: {
-    isShown: false
+    isModalShown: false,
+    showResult: false
   },
   reducers: {
     toggleModal: (state) => {
@@ -12,12 +13,15 @@ export const modalSlice = createSlice({
       // which detects changes to a 'draft state' and produces a brand new
       // immutable state based off those changes.
       // Also, no return statement is required from these functions.
-      state.isShown = !state.isShown;
+      state.isModalShown = !state.isModalShown;
+    },
+    toggleResult: (state) => {
+      state.showResult = !state.showResult
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { toggleModal } = modalSlice.actions;
+export const { toggleModal, toggleResult } = reducers.actions;
 
-export default modalSlice.reducer;
+export default reducers.reducer;

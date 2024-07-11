@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import modalReducer from './modalSlice';
+import globalReducer from './reducers';
 
 export default configureStore({
   reducer: {
-    modal: modalReducer
+    global: globalReducer
   },
 });

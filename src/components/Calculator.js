@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Form } from 'react-final-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleResult } from '../app/reducers';
 import { initialValues, formFields } from '../utils/formFields';
 import { parseTypes } from '../utils/types';
 import InputField from './InputField';
 import SelectField from './SelectField';
+import Result from './Result';
 
 import './Calculator.css';
 
@@ -13,6 +16,10 @@ const Calculator = () => {
   const [isCustomCCD, setIsCustomCCD] = useState(false);
   const [isCustomBinning, setIsCustomBinning] = useState(false);
   const [isCustomFilter, setIsCustomFilter] = useState(false);
+  const [fieldsValues, setFieldsValues] = useState({});
+
+  const dispatch = useDispatch();
+  const showResult = useSelector((state) => state.global.showResult);
 
   const customFieldSelected = {
     telescope: isCustomTelescope,
@@ -50,7 +57,8 @@ const Calculator = () => {
 
   const onSubmit = (values) => {
     const parsedValues = parseTypes(values);
-    console.log({parsedValues});
+    dispatch(toggleResult());
+    setFieldsValues(() => parsedValues);
   };
 
   return (
@@ -61,57 +69,30 @@ const Calculator = () => {
         <form onSubmit={handleSubmit} onChange={handleFieldChange}>
           <fieldset>
             <legend>Exposure time calculator</legend>
+            {
+              showResult ?
+              <Result fieldsValues={fieldsValues} /> :
+              <div className='form'>
+                {
+                  formFields.map((field) => {
+                    const { name, component } = field;
 
-            <div className='form'>
-              {
-                formFields.map((field) => {
-                  const { name, component } = field;
+                    return (
+                      <div className='parameters' key={name}>
+                        {
+                          component === 'input' && <InputField field={field} />
+                        }
+                        {
+                          component === 'select' && <SelectField field={field} customFieldSelected={customFieldSelected} />
+                        }
+                      </div>
+                    )
+                  })
+                }
 
-                  return (
-                    <div className='parameters' key={name}>
-                      {
-                        component === 'input' && <InputField field={field} />
-                      }
-                      {
-                        component === 'select' && <SelectField field={field} customFieldSelected={customFieldSelected} />
-                      }
-                    </div>
-                  )
-                })
-              }
-
-              <button type='submit' className='btn submit'>Calculate</button>
-            </div>
-
-            <div className='result hidden'>
-              <section>
-                <p>Object: <span className='r-object bold'></span></p>
-                <p>Telescope: <span className='r-telescope bold'></span></p>
-                <p>Reducer: <span className='r-reducer bold'></span></p>
-                <p>CCD: <span className='r-ccd bold'></span></p>
-                <p>CCD binning: <span className='r-binning bold'></span></p>
-                <p>Band: <span className='r-filter bold'></span></p>
-                <p>Total transparency on all optical elements: <span className='r-transparency bold'></span></p>
-                <p>Airmass: <span className='r-airmass bold'></span></p>
-                <p>Sky brightness (mag/arcsec<sup>2</sup>): <span className='r-sky-brightness bold'></span></p>
-                <p>Seeing (FWHM in arcsec): <span className='r-seeing bold'></span></p>
-                <p>Radius for photometry (arcsec): <span className='r-aperture bold'></span></p>
-                <p>Magnitude: <span className='r-magnitude bold'></span></p>
-                <p>S/N: <span className='r-signal-to-noise bold'></span></p>
-                <p>Signal from the object: <span className='s_sig bold'>0</span> e<sup>-</sup>/s</p>
-                <p>Signal from the sky: <span className='s_sky bold'>0</span> e<sup>-</sup>/s/pix</p>
-                <p>Dark current: <span className='s_dc bold'>0</span> e<sup>-</sup>/s/pix</p>
-                <p>Read out noise: <span className='s_ro bold'>0</span> e<sup>-</sup>/pix</p>
-                <p>Number of pixels: <span className='n_pix bold'>0</span> pix</p>
-                <p className='exposure bold'>Exposure time: <span>0</span></p>
-                <p className='showGraph'>
-                <label>Show graph</label>
-                  <input type='checkbox' id='showGraph' name='showGraph' />
-                </p>
-              </section>
-              <canvas id='canvas' className='collapsed' width='550' height='400'></canvas>
-              <input type='button' className='btn back' value='Back' />
-            </div>
+                <button type='submit' className='btn submit'>Calculate</button>
+              </div>
+            }
           </fieldset>
         </form>
       )}

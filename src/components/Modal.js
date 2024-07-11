@@ -1,6 +1,6 @@
 import { Form } from 'react-final-form';
 import { useDispatch } from 'react-redux';
-import { toggleModal } from '../app/modalSlice';
+import { toggleModal } from '../app/reducers';
 import './Modal.css';
 
 const Modal = () => {

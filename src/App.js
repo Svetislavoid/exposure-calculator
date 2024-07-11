@@ -6,7 +6,7 @@ import Calculator from './components/Calculator';
 import Footer from './components/Footer';
 
 const App = () => {
-  const isModalShown = useSelector((state) => state.modal.isShown);
+  const isModalShown = useSelector((state) => state.global.isModalShown);
 
   return (
     <div className='app'>

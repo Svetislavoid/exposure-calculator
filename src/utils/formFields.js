@@ -229,3 +229,52 @@ export const formFields = [
     validation: composeValidators(required, mustBeNumber, minValue(0))
   }
 ];
+
+export const optionValuesToLabels = {
+  object: {
+    point: 'Point',
+    extended: 'Extended'
+  },
+  telescope: {
+    cassegrain: '60cm Cassegrain',
+    nasmyth: '1.4m Milankovic',
+    custom: 'Custom telescope'
+  },
+  reducer: {
+    '1': 'None',
+    '0.64': '0.64x',
+    '0.5': '0.5x',
+    custom: 'Custom reducer'
+  },
+  ccd: {
+    iXon897: 'ANDOR iXon 897',
+    iKonL936: 'ANDOR iKon-L 936',
+    sbigstxl6303e: 'SBIG STXL-6303E',
+    ProLinePL23042: 'ProLine PL23042',
+    custom: 'Custom CCD'
+  },
+  binning: {
+    '1': '1x1',
+    '2': '2x2',
+    '3': '3x3',
+    '4': '4x4',
+    '5': '5x5',
+    custom: 'Custom binning'
+  },
+  filter: {
+    B: <>B (4450 &#8491;)</>,
+    V: <>V (5510 &#8491;)</>,
+    R: <>R (6580 &#8491;)</>,
+    I: <>I (8060 &#8491;)</>,
+    L: <>L (35000 &#8491;)</>,
+    Ha: <>H&alpha; (6563 &#8491;)</>,
+    'Red-continuum': <>Red-continuum (6452 &#8491;)</>,
+    '[SII]': <>[SII] (6716 &#8491;)</>,
+    G: <>G (4770 &#8491;)</>,
+    R1: <>R (6231 &#8491;)</>,
+    I1: <>I (7625 &#8491;)</>,
+    ZS: <>ZS (8930 &#8491;)</>,
+    Y: <>Y (10200 &#8491;)</>,
+    custom: 'Custom band'
+  }
+}
