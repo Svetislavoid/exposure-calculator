@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { toggleResult } from '../app/reducers';
-import { optionValuesToLabels } from '../utils/formFields';
+import { getLabelFromValue, formFields } from '../utils/formFields';
 import './Result.css';
 
 const Result = ({fieldsValues}) => {
@@ -42,8 +42,8 @@ const Result = ({fieldsValues}) => {
   return (
     <div className='result'>
       <section>
-        <p>Object: <span className='bold'>{optionValuesToLabels.object[object]}</span></p>
-        <p>Telescope: <span className='bold'>{optionValuesToLabels.telescope[telescope]}</span></p>
+        <p>Object: <span className='bold'>{getLabelFromValue(formFields, 'object', object)}</span></p>
+        <p>Telescope: <span className='bold'>{getLabelFromValue(formFields, 'telescope', telescope)}</span></p>
         {
           telescope === 'custom' && (
             <div className='customInfo'>
@@ -53,7 +53,7 @@ const Result = ({fieldsValues}) => {
             </div>
           )
         }
-        <p>Reducer: <span className='bold'>{optionValuesToLabels.reducer[reducer]}</span></p>
+        <p>Reducer: <span className='bold'>{getLabelFromValue(formFields, 'reducer', reducer)}</span></p>
         {
           reducer === 'custom' && (
             <div className='customInfo'>
@@ -61,7 +61,7 @@ const Result = ({fieldsValues}) => {
             </div>
           )
         }
-        <p>CCD: <span className='bold'>{optionValuesToLabels.ccd[ccd]}</span></p>
+        <p>CCD: <span className='bold'>{getLabelFromValue(formFields, 'ccd', ccd)}</span></p>
         {
           ccd === 'custom' && (
             <div className='customInfo'>
@@ -72,7 +72,7 @@ const Result = ({fieldsValues}) => {
             </div>
           )
         }
-        <p>CCD binning: <span className='bold'>{optionValuesToLabels.binning[binning]}</span></p>
+        <p>CCD binning: <span className='bold'>{getLabelFromValue(formFields, 'binning', binning)}</span></p>
         {
           binning === 'custom' && (
             <div className='customInfo'>
@@ -80,7 +80,7 @@ const Result = ({fieldsValues}) => {
             </div>
           )
         }
-        <p>Band: <span className='bold'>{optionValuesToLabels.filter[filter]}</span></p>
+        <p>Band: <span className='bold'>{getLabelFromValue(formFields, 'filter', filter)}</span></p>
         {
           filter === 'custom' && (
             <div className='customInfo'>
