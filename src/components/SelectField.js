@@ -2,7 +2,7 @@ import { Field } from 'react-final-form';
 import InputField from './InputField';
 
 const SelectField = ({ field, customFieldSelected }) => {
-  const { name, label, component, options, customInputs, isCustomSelected } = field;
+  const { name, label, component, options, customInputs } = field;
 
   return (
     <>
@@ -19,7 +19,7 @@ const SelectField = ({ field, customFieldSelected }) => {
         }
       </Field>
       {
-        isCustomSelected && isCustomSelected(customFieldSelected[name]) && customInputs.map((customInputField) => {
+        customFieldSelected[name] && customInputs.map((customInputField) => {
           return <InputField field={customInputField} />;
         })
       }

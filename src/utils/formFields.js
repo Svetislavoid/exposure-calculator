@@ -54,8 +54,7 @@ export const formFields = [
         label: 'Effective area of main mirror (%):',
         validation: composeValidators(required, mustBeNumber, minValue(0))
       }
-    ],
-    isCustomSelected: value => value
+    ]
   },
   {
     name: 'reducer',
@@ -74,8 +73,7 @@ export const formFields = [
         label: 'Custom reducer:',
         validation: composeValidators(required, mustBeNumber, minValue(0))
       }
-    ],
-    isCustomSelected: value => value
+    ]
   },
   {
     name: 'ccd',
@@ -113,8 +111,7 @@ export const formFields = [
         label: 'Quantum efficiency (%):',
         validation: composeValidators(required, mustBeNumber, minValue(0), maxValue(100))
       }
-    ],
-    isCustomSelected: value => value
+    ]
   },
   {
     name: 'binning',
@@ -135,8 +132,7 @@ export const formFields = [
         label: 'Custom binning:',
         validation: composeValidators(required, mustBeNumber, minValue(0))
       }
-    ],
-    isCustomSelected: value => value
+    ]
   },
   {
     name: 'filter',
@@ -183,8 +179,7 @@ export const formFields = [
         label: <>Extinction coefficient (mag/airmass):</>,
         validation: composeValidators(required, mustBeNumber, minValue(0))
       }
-    ],
-    isCustomSelected: value => value
+    ]
   },
   {
     name: 'transparency',
