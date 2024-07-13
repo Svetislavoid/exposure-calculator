@@ -230,6 +230,6 @@ export const formFields = [
   }
 ];
 
-export const getLabelFromValue = (formFields, field, value) => {
-  return formFields.find(formField => formField.name === field).options.find(option => option.value === value.toString()).label;
+export const getLabelFromValue = (formFieldOptions, value) => {
+  return formFieldOptions.find(option => option.value === value.toString()).label;
 };
