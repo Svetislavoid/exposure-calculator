@@ -1,0 +1,23 @@
+.customInfo {
+  margin-left: 20px;
+}
+
+.result * {
+  font-size: 22px;
+}
+
+.showGraph {
+  margin: 20px 0 0 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.showGraph * {
+  cursor: pointer;
+}
+
+.showGraph label {
+  width: unset;
+  padding: 0;
+}

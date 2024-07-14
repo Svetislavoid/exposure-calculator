@@ -1,7 +1,8 @@
 import { useDispatch } from 'react-redux';
 import { toggleResult } from '../app/reducers';
 import { getLabelFromValue, formFields } from '../utils/formFields';
-import './Result.css';
+import classes from './Result.module.css';
+import cn from 'classnames';
 
 const Result = ({fieldsValues}) => {
   const dispatch = useDispatch();
@@ -15,13 +16,13 @@ const Result = ({fieldsValues}) => {
 
     return (
       <>
-        <p>{label} <span className='bold'>{options ? getLabelFromValue(options, fieldsValues[name]) : fieldsValues[name]}</span></p>
+        <p>{label} <strong>{options ? getLabelFromValue(options, fieldsValues[name]) : fieldsValues[name]}</strong></p>
         {
           fieldsValues[name] === 'custom' &&
-            <div className='customInfo'>
+            <div className={classes.customInfo}>
               {
                 customInputs.map(({ name, label }) => {
-                  return <p>{label} <span className='bold'>{fieldsValues[name]}</span></p>
+                  return <p>{label} <strong>{fieldsValues[name]}</strong></p>
                 })
               }
             </div>
@@ -30,21 +31,21 @@ const Result = ({fieldsValues}) => {
     )};
 
   return (
-    <div className='result'>
+    <div>
       <section>
         {
           formFields.map(formField => {
             return renderSelectedValues(formField, fieldsValues);
           })
         }
-        <p className='exposure bold'>Exposure time: <span>0</span></p>
-        <p className='showGraph'>
-        <label>Show graph</label>
-          <input type='checkbox' id='showGraph' name='showGraph' />
+        <p className={classes.result}><strong>Exposure time: <span>0</span></strong></p>
+        <p className={classes.showGraph}>
+          <input type='checkbox' name='showGraph' />
+          <label>Show graph</label>
         </p>
       </section>
-      <canvas id='canvas' className='collapsed' width='550' height='400'></canvas>
-      <button type='button' className='btn back' onClick={goBack}>Back</button>
+      <canvas id='canvas' width='550' height='400'></canvas>
+      <button type='button' className={cn('btn', 'back')} onClick={goBack}>Back</button>
     </div>
   );
 }

@@ -1,15 +1,16 @@
+import cn from 'classnames';
 import { Field } from 'react-final-form';
 
 const InputField = ({field}) => {
   const { name, label, component, validation } = field;
 
   return (
-    <Field className={name} name={name} key={name} component={component} validate={validation}>
+    <Field name={name} key={name} component={component} validate={validation}>
       {({ input, meta }) => (
-        <>
-          <label>{label}</label>
-          <input {...input} type='text' className={meta.error && meta.touched ? 'error' : 'noError'} />
-        </>
+        <div className='formRow'>
+          <label className='formLabel'>{label}</label>
+          <input {...input} type='text' className={cn({'error' : meta.error && meta.touched})} />
+        </div>
       )}
     </Field>
   );

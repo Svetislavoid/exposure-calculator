@@ -19,13 +19,8 @@
   z-index: 100;
 }
 
-.modal label {
-  width: 72%;
-}
-
-.modal input {
-  margin-bottom: 20px;
-  width: 26%;
+.modal form {
+  width: unset;
 }
 
 .buttons {
@@ -50,8 +45,4 @@
 
 .btn.modalCancel:hover {
   background-color: #b11;
-}
-
-.modal form {
-  width: unset;
 }

@@ -1,6 +1,5 @@
 .appFooter {
-  margin-top: 20px;
-  padding: 0px 140px 0px;
+  margin: 20px;
   display: flex;
   flex-direction: column;
 }

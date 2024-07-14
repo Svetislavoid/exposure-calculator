@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import './Footer.css';
+import classes from './Footer.module.css';
 import snrFormula from '../img/snr.png';
 import exposureFormula from '../img/exposure.png';
 import objectSignalFormula from '../img/objectSignal.png';
@@ -17,10 +17,10 @@ const Footer = () => {
 
   return (
     <>
-      <button className='helpButton' onClick={toggleShowHelp}>Help</button>
+      <button className={classes.helpButton} onClick={toggleShowHelp}>Help</button>
       {
         showHelp && (
-        <footer className='appFooter'>
+        <footer className={classes.appFooter}>
           <h4>About the calculator</h4>
     
           <p>
@@ -53,23 +53,23 @@ const Footer = () => {
     
           <p>Calculator uses the following equation to calculate signal-to-noise ratio (SNR):</p>
     
-          <img className='formula' src={snrFormula} alt='SNR formula'></img>
+          <img className={classes.formula} src={snrFormula} alt='SNR formula'></img>
     
           <p>From this equation we get an expression for exposure time:</p>
     
-          <img className='formula' src={exposureFormula} alt='Exposure time formula'></img>
+          <img className={classes.formula} src={exposureFormula} alt='Exposure time formula'></img>
     
           <p>where S<sub>dc</sub> and S<sub>ro</sub> are camera dark current and read out noise values, respectively.</p>
     
           <p>Counts from the object, counts from the sky and number of pixels in the aperture are calculated as:</p>
     
-          <img className='formula' src={objectSignalFormula} alt='Counts from the object formula'></img>
-          <img className='formula' src={skySignalFormula} alt='Counts from the sky formula'></img>
-          <img className='formula' src={pixelNumberFormula} alt='Pixel number formula'></img>
+          <img className={classes.formula} src={objectSignalFormula} alt='Counts from the object formula'></img>
+          <img className={classes.formula} src={skySignalFormula} alt='Counts from the sky formula'></img>
+          <img className={classes.formula} src={pixelNumberFormula} alt='Pixel number formula'></img>
     
           <p>where</p>
     
-          <img className='formula' src={resolutionFormula} alt='Camera resolution formula'></img>
+          <img className={classes.formula} src={resolutionFormula} alt='Camera resolution formula'></img>
     
           <p>is camera resolution.</p>
         </footer>)

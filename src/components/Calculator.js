@@ -8,7 +8,8 @@ import InputField from './InputField';
 import SelectField from './SelectField';
 import Result from './Result';
 
-import './Calculator.css';
+import cn from 'classnames';
+import classes from './Calculator.module.css';
 
 const Calculator = () => {
   const [isCustomTelescope, setIsCustomTelescope] = useState(false);
@@ -66,19 +67,19 @@ const Calculator = () => {
       onSubmit={onSubmit}
       initialValues={initialValues}
       render={({ handleSubmit }) => (
-        <form onSubmit={handleSubmit} onChange={handleFieldChange}>
-          <fieldset>
-            <legend>Exposure time calculator</legend>
+        <form className={classes.form} onSubmit={handleSubmit} onChange={handleFieldChange}>
+          <fieldset className={classes.fieldset}>
+            <legend className={classes.legend}>Exposure time calculator</legend>
             {
               showResult ?
               <Result fieldsValues={fieldsValues} /> :
-              <div className='form'>
+              <div className={classes.form}>
                 {
                   formFields.map((field) => {
                     const { name, component } = field;
 
                     return (
-                      <div className='parameters' key={name}>
+                      <div className={classes.parameters} key={name}>
                         {
                           component === 'input' && <InputField field={field} />
                         }
@@ -90,7 +91,7 @@ const Calculator = () => {
                   })
                 }
 
-                <button type='submit' className='btn submit'>Calculate</button>
+                <button type='submit' className={cn('btn', 'submit')}>Calculate</button>
               </div>
             }
           </fieldset>

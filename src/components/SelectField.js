@@ -6,18 +6,20 @@ const SelectField = ({ field, customFieldSelected }) => {
 
   return (
     <>
-      <label>{label}</label>
-      <Field name={name} component={component}>
-        {
-          options.map((option) => {
-            const { value, label } = option;
+      <div className='formRow'>
+        <label className='formLabel'>{label}</label>
+        <Field name={name} component={component}>
+          {
+            options.map((option) => {
+              const { value, label } = option;
 
-            return (
-              <option value={value} key={value}>{label}</option>
-            );
-          })
-        }
-      </Field>
+              return (
+                <option value={value} key={value}>{label}</option>
+              );
+            })
+          }
+        </Field>
+      </div>
       {
         customFieldSelected[name] && customInputs.map((customInputField) => {
           return <InputField field={customInputField} />;

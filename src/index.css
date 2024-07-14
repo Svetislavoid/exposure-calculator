@@ -41,3 +41,40 @@ h5 {
 h6 {
   font-size: 0.7em;
 }
+
+.btn {
+  display: block;
+  border: none;
+  height: 40px;
+  width: 140px;
+  background-color: #bbb;
+  cursor: pointer;
+}
+
+.btn.submit,
+.btn.cancel,
+.btn.back {
+  margin: 30px auto 0;
+  width: 100%;
+}
+
+.btn.back {
+  flex: 100%;
+}
+
+.btn:hover {
+  background-color: #999;
+}
+
+.error {
+  border-color: #FF0000;
+}
+
+.formRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+label + * {
+  width: 40%;
+}

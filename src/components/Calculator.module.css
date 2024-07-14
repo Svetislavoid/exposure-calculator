@@ -1,0 +1,25 @@
+.form {
+  max-width: 680px;
+  margin: auto;
+}
+
+#canvas {
+  max-width: 50%;
+  margin: auto;
+}
+
+.fieldset {
+  padding: 30px 40px;
+}
+
+.legend {
+  font-size: 24px;
+}
+
+.parameters {
+  padding: 10px 20px;
+}
+
+.parameters:nth-child(odd) {
+  background-color: #cde; 
+}
