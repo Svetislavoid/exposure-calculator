@@ -1,6 +1,6 @@
 import { CUSTOM } from './types';
 
-export const getQE = (lambda, cameraQE) => {
+const getQE = (lambda, cameraQE) => {
   let diff = 999999999999;
   let pos = 0;
 
@@ -15,7 +15,7 @@ export const getQE = (lambda, cameraQE) => {
 };
 
 // Error function
-export const erf = (x) => {
+const erf = (x) => {
   // erf(x) = 2/sqrt(pi) * integrate(from=0, to=x, e^-(t^2) ) dt
   // with using Taylor expansion,
   //        = 2/sqrt(pi) * sigma(n=0 to +inf, ((-1)^n * x^(2n+1))/(n! * (2n+1)))
@@ -24,7 +24,7 @@ export const erf = (x) => {
   let s = 1.00;
   let sum = x * 1.0;
 
-  for(let i = 1; i < 50; i++){
+  for (let i = 1; i < 50; i++) {
     m *= i;
     s *= -1;
     sum += (s * Math.pow(x, 2.0 * i + 1.0)) / (m * (2.0 * i + 1.0));
@@ -38,20 +38,16 @@ export const erf = (x) => {
 // FWHM given by the first argument (with units of arcsec). We calculate
 // the fraction of that light which falls within an aperture of radius
 // given by second argument (with units of arcsec).
-export const fractionInside = (fwhm, radius) => {
-  let sigma;
-  let z;
-  let x1;
-  // let large = 1000.0;
-  let ratio;
+const fractionInside = (fwhm, radius) => {
+  // const large = 1000.0;
 
   // calculate how far out the 'radius' is in units of 'sigmas'
-  sigma = fwhm / 2.35;
-  z = radius / (sigma * 1.414);
+  const sigma = fwhm / 2.35;
+  const z = radius / (sigma * 1.414);
 
   // now, we assume that a radius of 'large' is effectively infinite
-  x1 = this.erf(z);
-  ratio = (x1 * x1);
+  const x1 = erf(z);
+  const ratio = (x1 * x1);
 
   return ratio;
 };
@@ -62,72 +58,56 @@ export const fractionInside = (fwhm, radius) => {
 // goes to the trouble of calculating how much of the light falls within
 // fractional pixels defined by the given radius of a synthetic aperture.
 // It is slow but more accurate than the 'fraction_inside' function.
-export const fractionInsideSlow = (fwhm, radius, pxSize) => {
-  let i, j, k, l;
-  let maxPixRad;
-  let sigma2;
-  let x, y;
-  let fx, fy;
-  let psfCenterX, psfCenterY;
-  let ratio;
-  let bit;
-  let thisBit;
-  let pxSum;
-  let allSum;
-  let radSum;
-  let rad2, radius2;
-  let inten;
-  let piece;
-
+const fractionInsideSlow = (fwhm, radius, pxSize) => {
   // how many pieces do we sub-divide pixels into?
-  piece = 20;
+  const piece = 20;
 
   // rescale FWHM and aperture radius into pixels (instead of arcsec)
-  fwhm /= pxSize;
-  radius /= pxSize;
+  const fwhmRescaled = fwhm / pxSize;
+  const radiusRescaled = radius / pxSize;
 
-  maxPixRad = 30;
+  const maxPixRad = 30;
 
   // check to make sure user isn't exceeding our built-in limits
-  if (radius >= maxPixRad) {
+  if (radiusRescaled >= maxPixRad) {
     console.log('Warning: radius exceeds limit of ' + maxPixRad);
   }
 
   // these values control the placement of the star on the pixel grid:
   //    (0,0) to make the star centered on a junction of four pixels
   //    (0.5, 0.5) to make star centered on one pixel
-  psfCenterX = 0.5;
-  psfCenterY = 0.5;
+  const psfCenterX = 0.5;
+  const psfCenterY = 0.5;
 
-  sigma2 = fwhm / 2.35;
-  sigma2 = sigma2 * sigma2;
-  radius2 = radius * radius;
-  bit = 1.0 / piece;
+  const sigma = fwhmRescaled / 2.35;
+  const sigmaSquared = Math.pow(sigma, 2);
+  const radiusSquared = Math.pow(radiusRescaled, 2);
+  const bit = 1.0 / piece;
 
-  radSum = 0;
-  allSum = 0;
+  let radSum = 0;
+  let allSum = 0;
 
-  for (i = 0 - maxPixRad; i < maxPixRad; i++) {
-    for (j = 0 - maxPixRad; j < maxPixRad; j++) {
+  for (let i = 0 - maxPixRad; i < maxPixRad; i++) {
+    for (let j = 0 - maxPixRad; j < maxPixRad; j++) {
 
       // now, how much light falls into pixel (i, j)?
-      pxSum = 0;
-      for (k = 0; k < piece; k++) {
+      let pxSum = 0;
+      for (let k = 0; k < piece; k++) {
 
-        x = (i - psfCenterX) + (k + 0.5) * bit;
-        fx = Math.exp(-(x * x) / (2.0 * sigma2));
+        const x = (i - psfCenterX) + (k + 0.5) * bit;
+        const fx = Math.exp(-Math.pow(x, 2) / (2.0 * sigmaSquared));
 
-        for (l = 0; l < piece; l++) {
+        for (let l = 0; l < piece; l++) {
 
-          y = (j - psfCenterY) + (l + 0.5) * bit;
-          fy = Math.exp(-(y * y) / (2.0 * sigma2));
+          const y = (j - psfCenterY) + (l + 0.5) * bit;
+          const fy = Math.exp(-(y * y) / (2.0 * sigmaSquared));
 
-          inten = fx * fy;
-          thisBit = inten * bit * bit;
+          const inten = fx * fy;
+          const thisBit = inten * Math.pow(bit, 2);
           pxSum += thisBit;
 
-          rad2 = x * x + y * y;
-          if (rad2 <= radius2) {
+          const radSquared = Math.pow(x, 2) + Math.pow(y, 2);
+          if (radSquared <= radiusSquared) {
             radSum += thisBit;
           }
         }
@@ -136,27 +116,34 @@ export const fractionInsideSlow = (fwhm, radius, pxSize) => {
     }
   }
 
-  ratio = radSum / allSum;
+  const ratio = radSum / allSum;
 
   return ratio;
 };
 
-export const secondsToTime = (secs) => {
+const secondsToTime = (secs) => {
   const hours = Math.floor(secs / 3600);
   const minutes = Math.floor(secs % 3600 / 60);
   const seconds = Math.floor(secs % 60);
 
-  let exposureTime;
+  const hoursString = hours ? `${hours}h ` : '';
+  const minutesString = minutes || (hours && seconds) ? `${minutes}m ` : '';
+  const secondsString = seconds ? `${seconds}s ` : '';
+  const secsString = `(${secs}s)`;
 
-  if (hours) {
-    exposureTime = `${hours}h ${minutes}m ${seconds}s (${secs}s)`;
-  } else if (minutes) {
-    exposureTime = `${minutes}m ${seconds}s (${secs}s)`;
-  } else {
-    exposureTime = `${seconds}s`;
+  return hoursString + minutesString + secondsString + secsString;
+};
+
+export const formatExposureTime = (exposureTime) => {
+  if (exposureTime <= 20) {
+    return `${exposureTime}s`;
   }
 
-  return exposureTime;
+  if (exposureTime >= 1000000) {
+    return `${Math.round(exposureTime)}s`;
+  }
+
+  return secondsToTime(Math.round(exposureTime));
 };
 
 export const calculateExposureTime = ({ fieldsValues, telescopes, cameras, bands }) => {
@@ -224,15 +211,11 @@ export const calculateExposureTime = ({ fieldsValues, telescopes, cameras, bands
   return exposure;
 };
 
-export const formatExposureTime = (exposureTime) => {
-  return exposureTime <= 20 ? `${exposureTime}s` : secondsToTime(Math.round(exposureTime));
-};
-
 // ===============
 // GRAPH FUNCTIONS
 // ===============
 
-export const setXOffset = (sn) => {
+const setXOffset = (sn) => {
   const ctx = this.canvas.getContext('2d');
   const txt = sn.toString();
   const txtWidth= ctx.measureText(txt).width;
@@ -240,7 +223,7 @@ export const setXOffset = (sn) => {
   this.graph.xOffset = txtWidth + 5 < 20 ? 25 : txtWidth + 5;
 };
 
-export const resetGraph = () => {
+const resetGraph = () => {
   const ctx = this.canvas.getContext('2d');
   const height = this.canvas.height;
   const width = this.canvas.width;
@@ -251,7 +234,7 @@ export const resetGraph = () => {
   ctx.clearRect(0, 0, width, height);
 };
 
-export const drawGraphLines = () => {
+const drawGraphLines = () => {
   const ctx = this.canvas.getContext('2d');
   const width = this.canvas.width;
   const height = this.canvas.height;
@@ -294,7 +277,7 @@ export const drawGraphLines = () => {
   ctx.closePath();
 };
 
-export const addGraphValues = () => {
+const addGraphValues = () => {
   var ctx = this.canvas.getContext('2d');
   var height = this.canvas.height;
   var width = this.canvas.width;
@@ -356,7 +339,7 @@ export const addGraphValues = () => {
   }
 };
 
-export const drawGraph = () => {
+const drawGraph = () => {
   var ctx = this.canvas.getContext('2d');
   var height = this.canvas.height;
   var width = this.canvas.width;
@@ -390,7 +373,7 @@ export const drawGraph = () => {
   this.graph.drawn = true;
 };
 
-export const drawHelpLines = () => {
+const drawHelpLines = () => {
   var ctx = this.canvas.getContext('2d');
   var height = this.canvas.height;
   var width = this.canvas.width;
