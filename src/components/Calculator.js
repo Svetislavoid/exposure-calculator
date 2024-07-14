@@ -3,7 +3,7 @@ import { Form } from 'react-final-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleResult } from '../app/reducers';
 import { initialValues, formFields } from '../utils/formFields';
-import { parseTypes } from '../utils/types';
+import { parseTypes, CUSTOM } from '../utils/types';
 import InputField from './InputField';
 import SelectField from './SelectField';
 import Result from './Result';
@@ -33,7 +33,7 @@ const Calculator = () => {
   const handleFieldChange = (e) => {
     const fieldName = e.target.name;
     const fieldValue = e.target.value;
-    const isCustomField = fieldValue === 'custom';
+    const isCustomField = fieldValue === CUSTOM;
 
     switch (fieldName) {
       case 'telescope':

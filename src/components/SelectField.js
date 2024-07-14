@@ -8,7 +8,7 @@ const SelectField = ({ field, customFieldSelected }) => {
     <>
       <div className='formRow'>
         <label className='formLabel'>{label}</label>
-        <Field name={name} component={component}>
+        <Field name={name} key={name} component={component}>
           {
             options.map((option) => {
               const { value, label } = option;
@@ -22,7 +22,9 @@ const SelectField = ({ field, customFieldSelected }) => {
       </div>
       {
         customFieldSelected[name] && customInputs.map((customInputField) => {
-          return <InputField field={customInputField} />;
+          const { name } = customInputField;
+
+          return <InputField field={customInputField} key={name}/>;
         })
       }
     </>

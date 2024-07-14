@@ -1,3 +1,5 @@
+import { CUSTOM } from './types';
+
 export const getQE = (lambda, cameraQE) => {
   let diff = 999999999999;
   let pos = 0;
@@ -155,6 +157,75 @@ export const secondsToTime = (secs) => {
   }
 
   return exposureTime;
+};
+
+export const calculateExposureTime = ({ fieldsValues, telescopes, cameras, bands }) => {
+  const {
+    object,
+    telescope,
+    reducer,
+    ccd,
+    binning,
+    filter,
+    transparency,
+    airmass,
+    skyBrightness,
+    seeing,
+    aperture,
+    magnitude,
+    signalToNoise,
+    customTelescopeDiameter,
+    customTelescopeFocalLength,
+    customTelescopeEffectiveArea,
+    customReducer,
+    customReadOutNoise,
+    customDarkCurrent,
+    customPixelSize,
+    customQuantumEfficiency,
+    customBinning,
+    customWavelength,
+    customBandwidth,
+    customFlux,
+    customExtinctionCoefficient
+  } = fieldsValues;
+
+  // reducer values
+  const reducerValue = reducer === CUSTOM ? customReducer : reducer;
+
+  // binning values
+  const binningValue = binning === CUSTOM ? customBinning : binning;
+
+  // telescope values
+  const diameter = telescope === CUSTOM ? customTelescopeDiameter : telescopes[telescope].diameter;
+  const focalLength = (telescope === CUSTOM ? customTelescopeFocalLength : telescopes[telescope].focalLength) * reducerValue;
+  const effectiveArea = telescope === CUSTOM ? customTelescopeEffectiveArea : telescopes[telescope].effectiveAreaCoeff;
+
+  // bands values
+  const wavelength = filter === CUSTOM ? customWavelength : bands[filter].wavelength;
+  const bandwidth = filter === CUSTOM ? customBandwidth : bands[filter].bandwidth;
+  const photonFlux = (filter === CUSTOM ? customFlux : bands[filter].fluxPh) * 10000;
+  const extinctionCoefficient = filter === CUSTOM ? customExtinctionCoefficient : bands[filter].extinctCoeff;
+
+  // camera values
+  const darkCurrent = ccd === CUSTOM ? customDarkCurrent : cameras[ccd].dc;
+  const readOutNoise = ccd === CUSTOM ? customReadOutNoise : cameras[ccd].ro;
+  const pixelSize = ccd === CUSTOM ? customPixelSize : cameras[ccd].pxSize;
+  const quantumEfficiency = ccd === CUSTOM ? customQuantumEfficiency : getQE(wavelength, cameras[ccd].qe);
+
+  const resolution = (binningValue * pixelSize * 206265 / focalLength).toFixed(2);
+  const numberOfPixels = object === 'point' ? (Math.pow(aperture / resolution, 2) * Math.PI).toFixed(2) : 1;
+  const telescopeArea = Math.pow(diameter, 2) * Math.PI / 4 * effectiveArea;
+
+  const signal = object === 'point' ? Math.pow(10, -1 * (magnitude + airmass * extinctionCoefficient) / 2.5) * photonFlux * telescopeArea * transparency * quantumEfficiency * bandwidth * fractionInsideSlow(seeing, aperture, resolution) : Math.pow(10, -1 * (magnitude + airmass * extinctionCoefficient) / 2.5) * photonFlux * telescopeArea * transparency * quantumEfficiency * bandwidth * Math.pow(resolution, 2) * fractionInsideSlow(seeing, aperture, resolution);
+  const sky = Math.pow(10, -1 * skyBrightness / 2.5) * photonFlux * telescopeArea * transparency * quantumEfficiency * bandwidth * Math.pow(resolution, 2);
+
+  const exposure = ((Math.pow(signalToNoise, 2) * (signal + (sky + darkCurrent) * numberOfPixels) + Math.sqrt(Math.pow(signalToNoise, 4) * Math.pow((signal + (sky + darkCurrent) * numberOfPixels), 2) + 4 * Math.pow(signal * signalToNoise * readOutNoise, 2) * numberOfPixels)) / (2 * Math.pow(signal, 2))).toFixed(2);
+
+  return exposure;
+};
+
+export const formatExposureTime = (exposureTime) => {
+  return exposureTime <= 20 ? `${exposureTime}s` : secondsToTime(Math.round(exposureTime));
 };
 
 // ===============

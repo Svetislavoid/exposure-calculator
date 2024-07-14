@@ -40,3 +40,5 @@ export const parseTypes = (values) => {
 
   return parsedValues;
 };
+
+export const CUSTOM = 'custom';

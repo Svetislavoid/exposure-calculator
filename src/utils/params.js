@@ -1,3 +1,16 @@
+export const TELESCOPES = {
+  cassegrain: {
+    diameter: 0.6,
+    focalLength: 6,
+    effectiveAreaCoeff: 1
+  },
+  nasmyth: {
+    diameter: 1.4,
+    focalLength: 11.2,
+    effectiveAreaCoeff: 1
+  }
+};
+
 export const CAMERAS = {
   iXon897: {
     dc: 0.00030,

@@ -1,13 +1,22 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleResult } from '../app/reducers';
 import { getLabelFromValue, formFields } from '../utils/formFields';
+import { CUSTOM } from '../utils/types';
+import { TELESCOPES, CAMERAS, BANDS } from '../utils/params';
+import { calculateExposureTime, formatExposureTime } from '../utils/functions';
 import classes from './Result.module.css';
 import cn from 'classnames';
 
 const Result = ({fieldsValues}) => {
   const [isGraphShown, setIsGraphShown] = useState(false);
   const dispatch = useDispatch();
+  const exposureTime = calculateExposureTime({
+    fieldsValues,
+    telescopes: TELESCOPES,
+    cameras: CAMERAS,
+    bands: BANDS
+  });
 
   const toggleGraph = () => {
     setIsGraphShown((isGraphShown) => !isGraphShown);
@@ -21,19 +30,19 @@ const Result = ({fieldsValues}) => {
     const { name, label, options, customInputs } = formField;
 
     return (
-      <>
+      <Fragment key={name}>
         <p>{label} <strong>{options ? getLabelFromValue(options, fieldsValues[name]) : fieldsValues[name]}</strong></p>
         {
-          fieldsValues[name] === 'custom' &&
+          fieldsValues[name] === CUSTOM &&
             <div className={classes.customInfo}>
               {
                 customInputs.map(({ name, label }) => {
-                  return <p>{label} <strong>{fieldsValues[name]}</strong></p>
+                  return <p key={name}>{label} <strong>{fieldsValues[name]}</strong></p>
                 })
               }
             </div>
         }
-      </>
+      </Fragment>
     )};
 
   return (
@@ -44,10 +53,10 @@ const Result = ({fieldsValues}) => {
             return renderSelectedValues(formField, fieldsValues);
           })
         }
-        <p className={classes.result}><strong>Exposure time: <span>0</span></strong></p>
+        <p className={classes.result}><strong>Exposure time: {formatExposureTime(exposureTime)}</strong></p>
         <p className={classes.showGraph} onClick={toggleGraph}>
           <input id='showGraph' type='checkbox' name='showGraph' />
-          <label for='showGraph' onClick={toggleGraph}>Show graph</label>
+          <label htmlFor='showGraph' onClick={toggleGraph}>Show graph</label>
         </p>
       </section>
       {
