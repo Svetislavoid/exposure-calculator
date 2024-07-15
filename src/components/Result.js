@@ -7,16 +7,18 @@ import { TELESCOPES, CAMERAS, BANDS } from '../utils/params';
 import { calculateExposureTime, formatExposureTime } from '../utils/functions';
 import classes from './Result.module.css';
 import cn from 'classnames';
+import Canvas from './Canvas';
 
 const Result = ({fieldsValues}) => {
   const [isGraphShown, setIsGraphShown] = useState(false);
   const dispatch = useDispatch();
-  const exposureTime = calculateExposureTime({
+  const { exposure: exposureTime, signal, sky, numberOfPixels, darkCurrent, readOutNoise } = calculateExposureTime({
     fieldsValues,
     telescopes: TELESCOPES,
     cameras: CAMERAS,
     bands: BANDS
   });
+  const { signalToNoise } = fieldsValues;
 
   const toggleGraph = () => {
     setIsGraphShown((isGraphShown) => !isGraphShown);
@@ -60,7 +62,18 @@ const Result = ({fieldsValues}) => {
         </p>
       </section>
       {
-        isGraphShown && <canvas id='canvas' width='550' height='400'></canvas>
+        isGraphShown &&
+        <Canvas
+          width="592"
+          height="435"
+          signalToNoise={signalToNoise}
+          exposureTime={exposureTime}
+          signal={signal}
+          sky={sky}
+          numberOfPixels={numberOfPixels}
+          darkCurrent={darkCurrent}
+          readOutNoise={readOutNoise}
+        />
       }
       <button type='button' className={cn('btn', 'back')} onClick={goBack}>Back</button>
     </div>

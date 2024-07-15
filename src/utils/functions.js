@@ -15,42 +15,44 @@ const getQE = (lambda, cameraQE) => {
 };
 
 // Error function
-const erf = (x) => {
-  // erf(x) = 2/sqrt(pi) * integrate(from=0, to=x, e^-(t^2) ) dt
-  // with using Taylor expansion,
-  //        = 2/sqrt(pi) * sigma(n=0 to +inf, ((-1)^n * x^(2n+1))/(n! * (2n+1)))
-  // calculating n=0 to 50
-  let m = 1.00;
-  let s = 1.00;
-  let sum = x * 1.0;
 
-  for (let i = 1; i < 50; i++) {
-    m *= i;
-    s *= -1;
-    sum += (s * Math.pow(x, 2.0 * i + 1.0)) / (m * (2.0 * i + 1.0));
-  }
+// const erf = (x) => {
+//   // erf(x) = 2/sqrt(pi) * integrate(from=0, to=x, e^-(t^2) ) dt
+//   // with using Taylor expansion,
+//   //        = 2/sqrt(pi) * sigma(n=0 to +inf, ((-1)^n * x^(2n+1))/(n! * (2n+1)))
+//   // calculating n=0 to 50
+//   let m = 1.00;
+//   let s = 1.00;
+//   let sum = x * 1.0;
 
-  return 2 * sum / Math.sqrt(Math.PI);
-};
+//   for (let i = 1; i < 50; i++) {
+//     m *= i;
+//     s *= -1;
+//     sum += (s * Math.pow(x, 2.0 * i + 1.0)) / (m * (2.0 * i + 1.0));
+//   }
+
+//   return 2 * sum / Math.sqrt(Math.PI);
+// };
 
 // Figure out what fraction of a star's light falls within the aperture.
 // We assume that the starlight has a circular gaussian distribution with
 // FWHM given by the first argument (with units of arcsec). We calculate
 // the fraction of that light which falls within an aperture of radius
 // given by second argument (with units of arcsec).
-const fractionInside = (fwhm, radius) => {
-  // const large = 1000.0;
 
-  // calculate how far out the 'radius' is in units of 'sigmas'
-  const sigma = fwhm / 2.35;
-  const z = radius / (sigma * 1.414);
+// const fractionInside = (fwhm, radius) => {
+//   // const large = 1000.0;
 
-  // now, we assume that a radius of 'large' is effectively infinite
-  const x1 = erf(z);
-  const ratio = (x1 * x1);
+//   // calculate how far out the 'radius' is in units of 'sigmas'
+//   const sigma = fwhm / 2.35;
+//   const z = radius / (sigma * 1.414);
 
-  return ratio;
-};
+//   // now, we assume that a radius of 'large' is effectively infinite
+//   const x1 = erf(z);
+//   const ratio = (x1 * x1);
+
+//   return ratio;
+// };
 
 // Figure out what fraction of a star's light falls within the aperture.
 // We assume that the starlight has a circular gaussian distribution with
@@ -208,194 +210,179 @@ export const calculateExposureTime = ({ fieldsValues, telescopes, cameras, bands
 
   const exposure = ((Math.pow(signalToNoise, 2) * (signal + (sky + darkCurrent) * numberOfPixels) + Math.sqrt(Math.pow(signalToNoise, 4) * Math.pow((signal + (sky + darkCurrent) * numberOfPixels), 2) + 4 * Math.pow(signal * signalToNoise * readOutNoise, 2) * numberOfPixels)) / (2 * Math.pow(signal, 2))).toFixed(2);
 
-  return exposure;
+  return { exposure, signal, sky, numberOfPixels, darkCurrent, readOutNoise };
 };
 
 // ===============
 // GRAPH FUNCTIONS
 // ===============
 
-const setXOffset = (sn) => {
-  const ctx = this.canvas.getContext('2d');
-  const txt = sn.toString();
-  const txtWidth= ctx.measureText(txt).width;
+export const resetGraph = ({ canvas }) => {
+  const context = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
 
-  this.graph.xOffset = txtWidth + 5 < 20 ? 25 : txtWidth + 5;
+  context.setTransform(1, 0, 0, 1, 0, 0);
+  context.strokeStyle = '#000';
+  context.clearRect(0, 0, width, height);
 };
 
-const resetGraph = () => {
-  const ctx = this.canvas.getContext('2d');
-  const height = this.canvas.height;
-  const width = this.canvas.width;
+export const drawGraphLines = ({ canvas, signalToNoise }) => {
+  let xOffset = 25;
+  const yOffset = 20;
+  let numberOfXSteps = 0;
+  let numberOfYSteps = 0;
+  const widthOfXStep = 45;
+  const widthOfYStep = 45;
 
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.strokeStyle = '#000';
+  const context = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  const txt = Math.ceil(signalToNoise * 1.3).toString();
+  const txtWidth = context.measureText(txt).width;
 
-  ctx.clearRect(0, 0, width, height);
-};
+  xOffset = txtWidth + 5 < 20 ? 25 : txtWidth + 5;
 
-const drawGraphLines = () => {
-  const ctx = this.canvas.getContext('2d');
-  const width = this.canvas.width;
-  const height = this.canvas.height;
+  context.setTransform(1, 0, 0, -1, 0, height);
 
-  this.setXOffset(Math.ceil(this.eqParams.snr * 1.3));
+  numberOfXSteps = 0;
+  numberOfYSteps = 0;
 
-  ctx.setTransform(1, 0, 0, -1, 0, height);
+  context.beginPath();
 
-  this.graph.broj_podeokaX = 0;
-  this.graph.broj_podeokaY = 0;
+  // draw axes
+  context.moveTo(xOffset, yOffset + 10);
+  context.lineTo(width - 30, yOffset + 10);
+  context.moveTo(xOffset + 10, yOffset);
+  context.lineTo(xOffset + 10, height - 20);
 
-  // important so we can later remove the lines drawn with lineTo() method
-  ctx.beginPath();
-
-  // koordinatne linije
-  // x-osa
-  ctx.moveTo(this.graph.xOffset, this.graph.yOffset + 10);
-  ctx.lineTo(width - 30, this.graph.yOffset + 10);
-
-  // y-osa
-  ctx.moveTo(this.graph.xOffset + 10, this.graph.yOffset);
-  ctx.lineTo(this.graph.xOffset + 10, height - 20);
-
-  // podeoci na x osi
-  for (var i = this.graph.xOffset + 10 + this.graph.podeokX; i <= width - 30; i += this.graph.podeokX) {
-    ctx.moveTo(i, this.graph.yOffset + 10);
-    ctx.lineTo(i, this.graph.yOffset);
-    this.graph.broj_podeokaX++;
+  // draw x-axis steps
+  for (let i = xOffset + 10 + widthOfXStep; i <= width - 30; i += widthOfXStep) {
+    context.moveTo(i, yOffset + 10);
+    context.lineTo(i, yOffset);
+    numberOfXSteps++;
   }
 
-  // podeoci na y osi
-  for (var j = this.graph.yOffset + 10 + this.graph.podeokY; j <= height - 20; j += this.graph.podeokY) {
-    ctx.moveTo(this.graph.xOffset + 10, j);
-    ctx.lineTo(this.graph.xOffset, j);
-    this.graph.broj_podeokaY++;
+  // draw y-axis steps
+  for (let j = yOffset + 10 + widthOfYStep; j <= height - 20; j += widthOfYStep) {
+    context.moveTo(xOffset + 10, j);
+    context.lineTo(xOffset, j);
+    numberOfYSteps++;
   }
 
-  ctx.stroke();
+  context.stroke();
+  context.closePath();
 
-  ctx.closePath();
+  return { xOffset, yOffset, numberOfXSteps, numberOfYSteps, widthOfXStep, widthOfYStep };
 };
 
-const addGraphValues = () => {
-  var ctx = this.canvas.getContext('2d');
-  var height = this.canvas.height;
-  var width = this.canvas.width;
+export const addGraphValues = ({ canvas, signalToNoise, exposureTime, xOffset, yOffset, numberOfXSteps, numberOfYSteps, widthOfXStep, widthOfYStep }) => {
+  const context = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
 
-  var n = 1;
-  var m = 1;
-  var t = this.eqParams.exposure;
-  var snr = this.eqParams.snr;
+  let n = 1;
+  let m = 1;
 
-  this.graph.upLimitX = Math.ceil(t * 1.3);
-  this.graph.upLimitY = Math.ceil(snr * 1.3);
+  let upLimitX = Math.ceil(exposureTime * 1.3);
+  let upLimitY = Math.ceil(signalToNoise * 1.3);
 
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  context.setTransform(1, 0, 0, 1, 0, 0);
 
-  // oznake koordinatnih osa
-  ctx.font = '16px sans-serif';
-  ctx.fillText('S/N', this.graph.xOffset, 15);
-  ctx.fillText('t(s)', width - 25, height - this.graph.yOffset - 5);
+  // Axes labels
+  context.font = '16px sans-serif';
+  context.fillText('S/N', xOffset, 15);
+  context.fillText('t(s)', width - 25, height - yOffset - 5);
 
-  // koordinatni početak
-  ctx.font = '10px sans-serif';
-  ctx.fillText('0', 3, height - this.graph.yOffset - 5); // y-osa
-  ctx.fillText('0', this.graph.xOffset + 7, height - this.graph.yOffset + 15); // x-osa
+  // Origin labels
+  context.font = '10px sans-serif';
+  context.fillText('0', 3, height - yOffset - 5); // y-axix
+  context.fillText('0', xOffset + 7, height - yOffset + 15); // x-axis
 
-  // vrednosti na x osi
-  if (this.graph.upLimitX > this.graph.broj_podeokaX) {
-    while (this.graph.upLimitX % this.graph.broj_podeokaX !== 0) {
-      this.graph.upLimitX++;
+  // x-axis values
+  if (upLimitX > numberOfXSteps) {
+    while (upLimitX % numberOfXSteps !== 0) {
+      upLimitX++;
     }
-    for (var j = this.graph.xOffset + 10 + this.graph.podeokX; j < width - 30; j += this.graph.podeokX) {
-      ctx.moveTo(j, height - 3);
-      ctx.fillText(n * this.graph.upLimitX / this.graph.broj_podeokaX, j - 5, height - this.graph.yOffset + 15);
+    for (let j = xOffset + 10 + widthOfXStep; j < width - 30; j += widthOfXStep) {
+      context.moveTo(j, height - 3);
+      context.fillText(n * upLimitX / numberOfXSteps, j - 5, height - yOffset + 15);
       n++;
     }
   } else {
-    for (var j = this.graph.xOffset + 10 + this.graph.podeokX; j < width - 20; j += this.graph.podeokX) {
-      ctx.moveTo(j, height - 3);
-      ctx.fillText((n * this.graph.upLimitX / this.graph.broj_podeokaX).toFixed(2), j - 5, height - this.graph.yOffset + 15);
+    for (let j = xOffset + 10 + widthOfXStep; j < width - 20; j += widthOfXStep) {
+      context.moveTo(j, height - 3);
+      context.fillText((n * upLimitX / numberOfXSteps).toFixed(2), j - 5, height - yOffset + 15);
       n++;
     }
   }
 
-  // vrednosti na y osi
-  if (this.graph.upLimitY > this.graph.broj_podeokaY) {
-    while (this.graph.upLimitY % this.graph.broj_podeokaY !== 0) {
-      this.graph.upLimitY++;
+  // y-axis values
+  if (upLimitY > numberOfYSteps) {
+    while (upLimitY % numberOfYSteps !== 0) {
+      upLimitY++;
     }
-    for (var j = height - 15 - this.graph.yOffset - this.graph.podeokY; j > 20; j -= this.graph.podeokY) {
-      ctx.moveTo(0, j);
-      ctx.fillText(m * this.graph.upLimitY / this.graph.broj_podeokaY, 3, j + 10);
+    for (let j = height - 15 - yOffset - widthOfYStep; j > 20; j -= widthOfYStep) {
+      context.moveTo(0, j);
+      context.fillText(m * upLimitY / numberOfYSteps, 3, j + 10);
       m++;
     }
   } else {
-    for (var j = height - 15 - this.graph.yOffset - this.graph.podeokY; j > 20; j -= this.graph.podeokY) {
-      ctx.moveTo(0, j);
-      ctx.fillText((m * this.graph.upLimitY / this.graph.broj_podeokaY).toFixed(2), 3, j + 10);
+    for (let j = height - 15 - yOffset - widthOfYStep; j > 20; j -= widthOfYStep) {
+      context.moveTo(0, j);
+      context.fillText((m * upLimitY / numberOfYSteps).toFixed(2), 3, j + 10);
       m++;
     }
   }
+
+  return { upLimitX, upLimitY };
 };
 
-const drawGraph = () => {
-  var ctx = this.canvas.getContext('2d');
-  var height = this.canvas.height;
-  var width = this.canvas.width;
+export const drawGraph = ({ canvas, numberOfXSteps, xOffset, yOffset, numberOfYSteps, widthOfXStep, widthOfYStep, upLimitX, upLimitY, signal, sky, numberOfPixels, darkCurrent, readOutNoise }) => {
+  const context = canvas.getContext('2d');
+  const height = canvas.height;
 
-  var scaleX = this.graph.podeokX * this.graph.broj_podeokaX / this.graph.upLimitX;
-  var scaleY = this.graph.podeokY * this.graph.broj_podeokaY / this.graph.upLimitY;
+  const scaleX = widthOfXStep * numberOfXSteps / upLimitX;
+  const scaleY = widthOfYStep * numberOfYSteps / upLimitY;
 
-  var sig = this.eqParams.sig;
-  var sky = this.eqParams.sky;
-  var dc = this.eqParams.dc;
-  var ro = this.eqParams.ro;
-  var n = this.eqParams.n;
+  const dataPointsNo = 200;
+  let snr = 0;
 
-  var snr = 0;
+  context.setTransform(1, 0, 0, -1, xOffset + 11, height - yOffset - 11);
+  context.beginPath();
 
-  ctx.setTransform(1, 0, 0, -1, this.graph.xOffset + 11, height - this.graph.yOffset - 11);
-  ctx.beginPath();
+  context.moveTo(0, 0);
 
-  ctx.moveTo(0, 0);
-
-  if (this.graph.upLimitX !== 0) {
-    for (var t = 0; t <= this.graph.upLimitX; t += this.graph.upLimitX / this.graph.dataPointsNo) {
-      snr = sig * t / Math.sqrt(sig * t + sky * n * t + dc * t * n + ro * ro * n);
-      ctx.lineTo(t * scaleX, snr * scaleY);
+  if (upLimitX !== 0) {
+    for (let t = 0; t <= upLimitX; t += upLimitX / dataPointsNo) {
+      snr = signal * t / Math.sqrt(signal * t + sky * numberOfPixels * t + darkCurrent * t * numberOfPixels + Math.pow(readOutNoise, 2) * numberOfPixels);
+      context.lineTo(t * scaleX, snr * scaleY);
     }
   }
 
-  ctx.stroke();
-  ctx.closePath();
+  context.stroke();
+  context.closePath();
 
-  this.graph.drawn = true;
+  return { scaleX, scaleY };
 };
 
-const drawHelpLines = () => {
-  var ctx = this.canvas.getContext('2d');
-  var height = this.canvas.height;
-  var width = this.canvas.width;
+export const drawHelpLines = ({ canvas, xOffset, yOffset, scaleX, scaleY, signalToNoise, exposureTime }) => {
+  const context = canvas.getContext('2d');
+  const height = canvas.height;
+  const width = canvas.width;
 
-  var scaleX = this.graph.podeokX * this.graph.broj_podeokaX / this.graph.upLimitX;
-  var scaleY = this.graph.podeokY * this.graph.broj_podeokaY / this.graph.upLimitY;
+  context.setTransform(1, 0, 0, -1, xOffset + 11, height - yOffset - 11);
+  context.beginPath();
 
-  var t = this.eqParams.exposure;
-  var snr = this.eqParams.snr;
+  context.strokeStyle = '#bbb';
 
-  ctx.setTransform(1, 0, 0, -1, this.graph.xOffset + 11, height - this.graph.yOffset - 11);
-  ctx.beginPath();
+  context.moveTo(0, signalToNoise * scaleY - 1);
+  context.lineTo(width, signalToNoise * scaleY - 1);
+  context.moveTo(exposureTime * scaleX - 1, 0);
+  context.lineTo(exposureTime * scaleX - 1, width);
 
-  ctx.strokeStyle = '#bbb';
-
-  ctx.moveTo(0, snr * scaleY - 1);
-  ctx.lineTo(this.canvas.width, snr * scaleY - 1);
-  ctx.moveTo(t * scaleX - 1, 0);
-  ctx.lineTo(t * scaleX - 1, this.canvas.width);
-
-  ctx.stroke();
-  ctx.closePath();
+  context.stroke();
+  context.closePath();
 };
 
 // Field validation functions

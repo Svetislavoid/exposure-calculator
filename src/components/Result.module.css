@@ -7,7 +7,7 @@
 }
 
 .showGraph {
-  margin: 20px 0 0 0;
+  margin: 20px 0;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
