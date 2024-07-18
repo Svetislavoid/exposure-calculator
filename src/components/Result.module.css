@@ -2,12 +2,20 @@
   margin-left: 20px;
 }
 
+.resultWrapper {
+  display: flex;
+}
+
+.resultWrapper p {
+  margin: 10px 0;
+}
+
 .result * {
   font-size: 22px;
 }
 
 .showGraph {
-  margin: 20px 0;
+  margin: 20px 0 0;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -20,4 +28,9 @@
 .showGraph label {
   width: unset;
   padding: 0;
+}
+
+.graph {
+  margin-left: 50px;
+  align-self: center;
 }

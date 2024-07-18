@@ -77,4 +77,5 @@ h6 {
 
 label + * {
   width: 40%;
+  padding-left: 10px;
 }

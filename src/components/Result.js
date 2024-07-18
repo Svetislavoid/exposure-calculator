@@ -49,32 +49,36 @@ const Result = ({fieldsValues}) => {
 
   return (
     <div>
-      <section>
+      <div className={classes.resultWrapper}>
+        <div>
+          {
+            formFields.map(formField => {
+              return renderSelectedValues(formField, fieldsValues);
+            })
+          }
+          <p className={classes.result}><strong>Exposure time: {formatExposureTime(exposureTime)}</strong></p>
+          <p className={classes.showGraph} onClick={toggleGraph}>
+            <input id='showGraph' type='checkbox' name='showGraph' />
+            <label htmlFor='showGraph' onClick={toggleGraph}>Show graph</label>
+          </p>
+        </div>
         {
-          formFields.map(formField => {
-            return renderSelectedValues(formField, fieldsValues);
-          })
+          isGraphShown &&
+          <div className={classes.graph}>
+            <Canvas
+              width="592"
+              height="435"
+              signalToNoise={signalToNoise}
+              exposureTime={exposureTime}
+              signal={signal}
+              sky={sky}
+              numberOfPixels={numberOfPixels}
+              darkCurrent={darkCurrent}
+              readOutNoise={readOutNoise}
+            />
+          </div>
         }
-        <p className={classes.result}><strong>Exposure time: {formatExposureTime(exposureTime)}</strong></p>
-        <p className={classes.showGraph} onClick={toggleGraph}>
-          <input id='showGraph' type='checkbox' name='showGraph' />
-          <label htmlFor='showGraph' onClick={toggleGraph}>Show graph</label>
-        </p>
-      </section>
-      {
-        isGraphShown &&
-        <Canvas
-          width="592"
-          height="435"
-          signalToNoise={signalToNoise}
-          exposureTime={exposureTime}
-          signal={signal}
-          sky={sky}
-          numberOfPixels={numberOfPixels}
-          darkCurrent={darkCurrent}
-          readOutNoise={readOutNoise}
-        />
-      }
+      </div>
       <button type='button' className={cn('btn', 'back')} onClick={goBack}>Back</button>
     </div>
   );
