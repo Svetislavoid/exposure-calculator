@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { resetGraph, drawGraphLines, addGraphValues, drawGraph, drawHelpLines } from '../utils/functions';
+import { drawCanvas } from '../utils/functions';
 
 const Canvas = ({width, height, signalToNoise, exposureTime, signal, sky, numberOfPixels, darkCurrent, readOutNoise}) => {
   const canvasRef = useRef(null);
@@ -7,50 +7,15 @@ const Canvas = ({width, height, signalToNoise, exposureTime, signal, sky, number
   useEffect(() => {
     const canvas = canvasRef.current;
 
-    resetGraph({ canvas });
-    const {
-      xOffset,
-      yOffset,
-      numberOfXSteps,
-      numberOfYSteps,
-      widthOfXStep,
-      widthOfYStep
-    } = drawGraphLines({ canvas, signalToNoise });
-    const { upLimitX, upLimitY } = addGraphValues({
+    drawCanvas({
       canvas,
-      signalToNoise,
       exposureTime,
-      xOffset,
-      yOffset,
-      numberOfXSteps,
-      numberOfYSteps,
-      widthOfXStep,
-      widthOfYStep
-    });
-    const { scaleX, scaleY } = drawGraph({
-      canvas,
-      xOffset,
-      yOffset,
-      numberOfXSteps,
-      numberOfYSteps,
-      widthOfXStep,
-      widthOfYStep,
-      upLimitX,
-      upLimitY,
-      signal,
-      sky,
-      numberOfPixels,
       darkCurrent,
-      readOutNoise
-    });
-    drawHelpLines({
-      canvas,
-      xOffset,
-      yOffset,
-      scaleX,
-      scaleY,
+      readOutNoise,
+      numberOfPixels,
+      signal,
       signalToNoise,
-      exposureTime
+      sky
     });
   }, [darkCurrent, exposureTime, numberOfPixels, readOutNoise, signal, signalToNoise, sky]);
   

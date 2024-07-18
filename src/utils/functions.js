@@ -123,17 +123,19 @@ const fractionInsideSlow = (fwhm, radius, pxSize) => {
   return ratio;
 };
 
-const secondsToTime = (secs) => {
+const secondsToTime = (secs, graphLabels) => {
   const hours = Math.floor(secs / 3600);
   const minutes = Math.floor(secs % 3600 / 60);
   const seconds = Math.floor(secs % 60);
 
-  const hoursString = hours ? `${hours}h ` : '';
-  const minutesString = minutes || (hours && seconds) ? `${minutes}m ` : '';
-  const secondsString = seconds ? `${seconds}s ` : '';
+  const hoursString = hours ? `${hours}h` : '';
+  const minutesString = minutes || (hours && seconds) ? `${minutes}m` : '';
+  const secondsString = seconds ? `${seconds}s` : '';
   const secsString = `(${secs}s)`;
 
-  return hoursString + minutesString + secondsString + secsString;
+  return graphLabels ?
+    [hoursString, minutesString, secondsString].join('') :
+    [hoursString, minutesString, secondsString, secsString].join(' ');
 };
 
 export const formatExposureTime = (exposureTime) => {
@@ -217,7 +219,7 @@ export const calculateExposureTime = ({ fieldsValues, telescopes, cameras, bands
 // GRAPH FUNCTIONS
 // ===============
 
-export const resetGraph = ({ canvas }) => {
+const resetGraph = ({ canvas }) => {
   const context = canvas.getContext('2d');
   const width = canvas.width;
   const height = canvas.height;
@@ -227,7 +229,7 @@ export const resetGraph = ({ canvas }) => {
   context.clearRect(0, 0, width, height);
 };
 
-export const drawGraphLines = ({ canvas, signalToNoise }) => {
+const drawGraphLines = ({ canvas, signalToNoise }) => {
   let xOffset = 25;
   const yOffset = 20;
   let numberOfXSteps = 0;
@@ -276,7 +278,17 @@ export const drawGraphLines = ({ canvas, signalToNoise }) => {
   return { xOffset, yOffset, numberOfXSteps, numberOfYSteps, widthOfXStep, widthOfYStep };
 };
 
-export const addGraphValues = ({ canvas, signalToNoise, exposureTime, xOffset, yOffset, numberOfXSteps, numberOfYSteps, widthOfXStep, widthOfYStep }) => {
+const addGraphValues = ({
+  canvas,
+  signalToNoise,
+  exposureTime,
+  xOffset,
+  yOffset,
+  numberOfXSteps,
+  numberOfYSteps,
+  widthOfXStep,
+  widthOfYStep
+}) => {
   const context = canvas.getContext('2d');
   const width = canvas.width;
   const height = canvas.height;
@@ -305,14 +317,23 @@ export const addGraphValues = ({ canvas, signalToNoise, exposureTime, xOffset, y
       upLimitX++;
     }
     for (let j = xOffset + 10 + widthOfXStep; j < width - 30; j += widthOfXStep) {
+      if (upLimitX > 3600 && n % 2) {
+        n++;
+        continue;
+      }
+
       context.moveTo(j, height - 3);
-      context.fillText(n * upLimitX / numberOfXSteps, j - 5, height - yOffset + 15);
+      const text = upLimitX < 660 ? n * upLimitX / numberOfXSteps : secondsToTime(n * upLimitX / numberOfXSteps, true);
+      const txtWidth = context.measureText(text).width;
+      context.fillText(text, j - txtWidth / 2, height - yOffset + 15, 35);
       n++;
     }
   } else {
     for (let j = xOffset + 10 + widthOfXStep; j < width - 20; j += widthOfXStep) {
       context.moveTo(j, height - 3);
-      context.fillText((n * upLimitX / numberOfXSteps).toFixed(2), j - 5, height - yOffset + 15);
+      const text = (n * upLimitX / numberOfXSteps).toFixed(2);
+      const txtWidth = context.measureText(text).width;
+      context.fillText(text, j - txtWidth / 2, height - yOffset + 15);
       n++;
     }
   }
@@ -338,7 +359,22 @@ export const addGraphValues = ({ canvas, signalToNoise, exposureTime, xOffset, y
   return { upLimitX, upLimitY };
 };
 
-export const drawGraph = ({ canvas, numberOfXSteps, xOffset, yOffset, numberOfYSteps, widthOfXStep, widthOfYStep, upLimitX, upLimitY, signal, sky, numberOfPixels, darkCurrent, readOutNoise }) => {
+const drawGraph = ({
+  canvas,
+  numberOfXSteps,
+  xOffset,
+  yOffset,
+  numberOfYSteps,
+  widthOfXStep,
+  widthOfYStep,
+  upLimitX,
+  upLimitY,
+  signal,
+  sky,
+  numberOfPixels,
+  darkCurrent,
+  readOutNoise
+}) => {
   const context = canvas.getContext('2d');
   const height = canvas.height;
 
@@ -366,7 +402,15 @@ export const drawGraph = ({ canvas, numberOfXSteps, xOffset, yOffset, numberOfYS
   return { scaleX, scaleY };
 };
 
-export const drawHelpLines = ({ canvas, xOffset, yOffset, scaleX, scaleY, signalToNoise, exposureTime }) => {
+const drawHelpLines = ({
+  canvas,
+  xOffset,
+  yOffset,
+  scaleX,
+  scaleY,
+  signalToNoise,
+  exposureTime
+}) => {
   const context = canvas.getContext('2d');
   const height = canvas.height;
   const width = canvas.width;
@@ -383,6 +427,67 @@ export const drawHelpLines = ({ canvas, xOffset, yOffset, scaleX, scaleY, signal
 
   context.stroke();
   context.closePath();
+};
+
+export const drawCanvas = ({
+  canvas,
+  exposureTime,
+  darkCurrent,
+  readOutNoise,
+  numberOfPixels,
+  signal,
+  signalToNoise,
+  sky
+}) => {
+  resetGraph({ canvas });
+
+  const {
+    xOffset,
+    yOffset,
+    numberOfXSteps,
+    numberOfYSteps,
+    widthOfXStep,
+    widthOfYStep
+  } = drawGraphLines({ canvas, signalToNoise });
+
+  const { upLimitX, upLimitY } = addGraphValues({
+    canvas,
+    signalToNoise,
+    exposureTime,
+    xOffset,
+    yOffset,
+    numberOfXSteps,
+    numberOfYSteps,
+    widthOfXStep,
+    widthOfYStep
+  });
+
+  const { scaleX, scaleY } = drawGraph({
+    canvas,
+    xOffset,
+    yOffset,
+    numberOfXSteps,
+    numberOfYSteps,
+    widthOfXStep,
+    widthOfYStep,
+    upLimitX,
+    upLimitY,
+    signal,
+    sky,
+    numberOfPixels,
+    darkCurrent,
+    readOutNoise
+  });
+
+  drawHelpLines({
+    canvas,
+    xOffset,
+    yOffset,
+    scaleX,
+    scaleY,
+    signalToNoise,
+    exposureTime
+  });
 };
 
 // Field validation functions
