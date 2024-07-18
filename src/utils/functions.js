@@ -204,13 +204,21 @@ export const calculateExposureTime = ({ fieldsValues, telescopes, cameras, bands
   const quantumEfficiency = ccd === CUSTOM ? customQuantumEfficiency : getQE(wavelength, cameras[ccd].qe);
 
   const resolution = (binningValue * pixelSize * 206265 / focalLength).toFixed(2);
-  const numberOfPixels = object === 'point' ? (Math.pow(aperture / resolution, 2) * Math.PI).toFixed(2) : 1;
+  const numberOfPixels = object === 'point' ? (Math.pow(aperture / resolution, 2) * Math.PI).toFixed(2) : 1; // should it be the other way around?
   const telescopeArea = Math.pow(diameter, 2) * Math.PI / 4 * effectiveArea;
 
-  const signal = object === 'point' ? Math.pow(10, -1 * (magnitude + airmass * extinctionCoefficient) / 2.5) * photonFlux * telescopeArea * transparency * quantumEfficiency * bandwidth * fractionInsideSlow(seeing, aperture, resolution) : Math.pow(10, -1 * (magnitude + airmass * extinctionCoefficient) / 2.5) * photonFlux * telescopeArea * transparency * quantumEfficiency * bandwidth * Math.pow(resolution, 2) * fractionInsideSlow(seeing, aperture, resolution);
-  const sky = Math.pow(10, -1 * skyBrightness / 2.5) * photonFlux * telescopeArea * transparency * quantumEfficiency * bandwidth * Math.pow(resolution, 2);
+  const magAirExtCoeff = magnitude + airmass * extinctionCoefficient;
+  const flTelTransQeBw = photonFlux * telescopeArea * transparency * quantumEfficiency * bandwidth;
 
-  const exposure = ((Math.pow(signalToNoise, 2) * (signal + (sky + darkCurrent) * numberOfPixels) + Math.sqrt(Math.pow(signalToNoise, 4) * Math.pow((signal + (sky + darkCurrent) * numberOfPixels), 2) + 4 * Math.pow(signal * signalToNoise * readOutNoise, 2) * numberOfPixels)) / (2 * Math.pow(signal, 2))).toFixed(2);
+  const signal = object === 'point' ?
+    Math.pow(10, -1 * (magAirExtCoeff) / 2.5) * flTelTransQeBw * fractionInsideSlow(seeing, aperture, resolution) :
+    Math.pow(10, -1 * (magAirExtCoeff) / 2.5) * flTelTransQeBw * Math.pow(resolution, 2) * fractionInsideSlow(seeing, aperture, resolution);
+  const sky = Math.pow(10, -1 * skyBrightness / 2.5) * flTelTransQeBw * Math.pow(resolution, 2);
+
+  const sigSkyDc = signal + (sky + darkCurrent) * numberOfPixels;
+  const rootPart = Math.sqrt(Math.pow(signalToNoise, 4) * Math.pow((sigSkyDc), 2) + 4 * Math.pow(signal * signalToNoise * readOutNoise, 2) * numberOfPixels);
+
+  const exposure = ((Math.pow(signalToNoise, 2) * (sigSkyDc) + rootPart) / (2 * Math.pow(signal, 2))).toFixed(2);
 
   return { exposure, signal, sky, numberOfPixels, darkCurrent, readOutNoise };
 };
