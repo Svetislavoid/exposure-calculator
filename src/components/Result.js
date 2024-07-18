@@ -56,6 +56,11 @@ const Result = ({fieldsValues}) => {
               return renderSelectedValues(formField, fieldsValues);
             })
           }
+          <p>Signal from the object: <strong>{signal.toFixed(2)}</strong> e<sup>-</sup>/s</p>
+          <p>Signal from the sky: <strong>{sky.toFixed(2)}</strong> e<sup>-</sup>/s/pix</p>
+          <p>Dark current: <strong>{darkCurrent}</strong> e<sup>-</sup>/s/pix</p>
+          <p>Read out noise: <strong>{readOutNoise}</strong> e<sup>-</sup>/pix</p>
+          <p>Number of pixels: <strong>{numberOfPixels}</strong> pix</p>
           <p className={classes.result}><strong>Exposure time: {formatExposureTime(exposureTime)}</strong></p>
           <p className={classes.showGraph} onClick={toggleGraph}>
             <input id='showGraph' type='checkbox' name='showGraph' />

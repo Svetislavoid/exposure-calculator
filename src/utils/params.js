@@ -1,10 +1,14 @@
 export const TELESCOPES = {
   cassegrain: {
+    active: true,
+    label: '60cm Cassegrain',
     diameter: 0.6,
     focalLength: 6,
     effectiveAreaCoeff: 1
   },
   nasmyth: {
+    active: true,
+    label: '1.4m Milankovic',
     diameter: 1.4,
     focalLength: 11.2,
     effectiveAreaCoeff: 1
@@ -13,6 +17,8 @@ export const TELESCOPES = {
 
 export const CAMERAS = {
   iXon897: {
+    active: true,
+    label: 'ANDOR iXon 897',
     dc: 0.00030,
     ro: 5.3,
     pxSize: 16e-6,
@@ -57,6 +63,8 @@ export const CAMERAS = {
     }
   },
   iKonL936: {
+    active: true,
+    label: 'ANDOR iKon-L 936',
     dc: 0.000059,
     ro: 2.9,
     pxSize: 13.5e-6,
@@ -101,6 +109,8 @@ export const CAMERAS = {
     }
   },
   sbigstxl6303e: {
+    active: true,
+    label: 'SBIG STXL-6303E',
     dc: 0.5,
     ro: 15,
     pxSize: 9,
@@ -145,6 +155,8 @@ export const CAMERAS = {
     }
   },
   ProLinePL23042: {
+    active: true,
+    label: 'ProLine PL23042',
     dc: 0.2,
     ro: 13,
     pxSize: 15,
@@ -192,6 +204,8 @@ export const CAMERAS = {
 
 export const BANDS = {
   'B': {
+    active: true,
+    label: <>B (4450 &#8491;)</>,
     wavelength: 4450,
     bandwidth: 760,
     fluxJY: 4260,
@@ -199,6 +213,8 @@ export const BANDS = {
     extinctCoeff: 0.4 // mag/airmass - need to check value
   },
   'V': {
+    active: true,
+    label: <>V (5510 &#8491;)</>,
     wavelength: 5510,
     bandwidth: 960,
     fluxJY: 3640,
@@ -206,6 +222,8 @@ export const BANDS = {
     extinctCoeff: 0.2 // mag/airmass - need to check value
   },
   'R': {
+    active: true,
+    label: <>R (6580 &#8491;)</>,
     wavelength: 6580,
     bandwidth: 1030,
     fluxJY: 3080,
@@ -213,6 +231,8 @@ export const BANDS = {
     extinctCoeff: 0.1 // mag/airmass - need to check value
   },
   'I': {
+    active: true,
+    label: <>I (8060 &#8491;)</>,
     wavelength: 8060,
     bandwidth: 2830,
     fluxJY: 2550,
@@ -220,6 +240,8 @@ export const BANDS = {
     extinctCoeff: 0.08 // mag/airmass - need to check value
   },
   'L': {
+    active: true,
+    label: <>L (35000 &#8491;)</>,
     wavelength: 35000,
     bandwidth: 2770,
     fluxJY: 280,
@@ -227,6 +249,8 @@ export const BANDS = {
     extinctCoeff: 0 // no data
   },
   'Ha': {
+    active: true,
+    label: <>H&alpha; (6563 &#8491;)</>,
     wavelength: 6563,
     bandwidth: 65,
     fluxJY: 3631,
@@ -234,6 +258,8 @@ export const BANDS = {
     extinctCoeff: 0 // no data
   },
   'Red-continuum': {
+    active: true,
+    label: <>Red-continuum (6452 &#8491;)</>,
     wavelength: 6452,
     bandwidth: 90,
     fluxJY: 3631,
@@ -241,6 +267,8 @@ export const BANDS = {
     extinctCoeff: 0 // no data
   },
   '[SII]': {
+    active: true,
+    label: <>[SII] (6716 &#8491;)</>,
     wavelength: 6718,
     bandwidth: 65,
     fluxJY: 3631,
@@ -248,6 +276,8 @@ export const BANDS = {
     extinctCoeff: 0 // no data
   },
   'G': {
+    active: true,
+    label: <>G (4770 &#8491;)</>,
     wavelength: 4770,
     bandwidth: 1450,
     fluxJY: 3631,
@@ -255,6 +285,8 @@ export const BANDS = {
     extinctCoeff: 0 // no data
   },
   'R1': {
+    active: true,
+    label: <>R (6231 &#8491;)</>,
     wavelength: 6231,
     bandwidth: 1300,
     fluxJY: 3631,
@@ -262,6 +294,8 @@ export const BANDS = {
     extinctCoeff: 0 // no data
   },
   'I1': {
+    active: true,
+    label: <>I (7625 &#8491;)</>,
     wavelength: 7625,
     bandwidth: 1500,
     fluxJY: 3631,
@@ -269,6 +303,8 @@ export const BANDS = {
     extinctCoeff: 0
   },
   'ZS': {
+    active: true,
+    label: <>ZS (8930 &#8491;)</>,
     wavelength: 8930,
     bandwidth: 980,
     fluxJY: 3631,
@@ -276,6 +312,8 @@ export const BANDS = {
     extinctCoeff: 0
   },
   'Y': {
+    active: true,
+    label: <>Y (10200 &#8491;)</>,
     wavelength: 10200,
     bandwidth: 1060,
     fluxJY: 3631,

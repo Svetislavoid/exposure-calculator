@@ -1,4 +1,5 @@
 import { required, mustBeNumber, minValue, composeValidators, maxValue } from './functions';
+import { TELESCOPES, CAMERAS, BANDS } from '../utils/params';
 
 export const initialValues = {
   object: 'point',
@@ -31,8 +32,9 @@ export const formFields = [
     component: 'select',
     label: 'Telescope:',
     options: [
-      { value: 'cassegrain', label: '60cm Cassegrain' },
-      { value: 'nasmyth', label: '1.4m Milankovic' },
+      ...Object.entries(TELESCOPES)
+        .filter(([key, value]) => value.active)
+        .map(([key, value]) => ({ value: key, label: value.label })),
       { value: 'custom', label: 'Custom telescope' }
     ],
     customInputs: [
@@ -80,10 +82,9 @@ export const formFields = [
     component: 'select',
     label: 'CCD:',
     options: [
-      { value: 'iXon897', label: 'ANDOR iXon 897' },
-      { value: 'iKonL936', label: 'ANDOR iKon-L 936' },
-      { value: 'sbigstxl6303e', label: 'SBIG STXL-6303E' },
-      { value: 'ProLinePL23042', label: 'ProLine PL23042' },
+      ...Object.entries(CAMERAS)
+        .filter(([key, value]) => value.active)
+        .map(([key, value]) => ({ value: key, label: value.label })),
       { value: 'custom', label: 'Custom CCD' }
     ],
     customInputs: [
@@ -139,19 +140,9 @@ export const formFields = [
     component: 'select',
     label: 'Band:',
     options: [
-      { value: 'B', label: <>B (4450 &#8491;)</> },
-      { value: 'V', label: <>V (5510 &#8491;)</> },
-      { value: 'R', label: <>R (6580 &#8491;)</> },
-      { value: 'I', label: <>I (8060 &#8491;)</> },
-      { value: 'L', label: <>L (35000 &#8491;)</> },
-      { value: 'Ha', label: <>H&alpha; (6563 &#8491;)</> },
-      { value: 'Red-continuum', label: <>Red-continuum (6452 &#8491;)</> },
-      { value: '[SII]', label: <>[SII] (6716 &#8491;)</> },
-      { value: 'G', label: <>G (4770 &#8491;)</> },
-      { value: 'R1', label: <>R (6231 &#8491;)</> },
-      { value: 'I1', label: <>I (7625 &#8491;)</> },
-      { value: 'ZS', label: <>ZS (8930 &#8491;)</> },
-      { value: 'Y', label: <>Y (10200 &#8491;)</> },
+      ...Object.entries(BANDS)
+        .filter(([key, value]) => value.active)
+        .map(([key, value]) => ({ value: key, label: value.label })),
       { value: 'custom', label: 'Custom band' }
     ],
     customInputs: [
