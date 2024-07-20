@@ -24,9 +24,8 @@ const App = () => {
         {
           isAboutPage && <button className={classes.togglePageButton} onClick={togglePage}>&#8592; Back to calculator</button>
         }
-        {
-          isAboutPage ? <About /> : <Calculator />
-        }
+        <About isShown={isAboutPage} />
+        <Calculator isShown={!isAboutPage} />
         {
           !isAboutPage && <button className={classes.togglePageButton} onClick={togglePage}>About the calculator</button>
         }

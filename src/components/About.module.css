@@ -8,3 +8,7 @@
   margin: 10px 0;
   align-self: center;
 }
+
+.hidden {
+  display: none;
+}

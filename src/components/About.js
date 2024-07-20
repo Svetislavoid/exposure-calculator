@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import classes from './About.module.css';
 import snrFormula from '../img/snr.png';
 import exposureFormula from '../img/exposure.png';
@@ -8,9 +9,9 @@ import resolutionFormula from '../img/scale.png';
 
 import Parameters from './Parameters';
 
-const About = () => {
+const About = ({ isShown }) => {
   return (
-    <section className={classes.appAbout}>
+    <section className={cn(classes.appAbout, {[classes.hidden]: !isShown})}>
       <h4>About the calculator</h4>
 
       <p>

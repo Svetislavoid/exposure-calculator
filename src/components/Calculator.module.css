@@ -23,3 +23,7 @@
 .parameters:nth-child(odd) {
   background-color: #cde; 
 }
+
+.hidden {
+  display: none;
+}

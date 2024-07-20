@@ -11,7 +11,7 @@ import Result from './Result';
 import cn from 'classnames';
 import classes from './Calculator.module.css';
 
-const Calculator = () => {
+const Calculator = ({ isShown }) => {
   const [isCustomTelescope, setIsCustomTelescope] = useState(false);
   const [isCustomReducer, setIsCustomReducer] = useState(false);
   const [isCustomCCD, setIsCustomCCD] = useState(false);
@@ -67,7 +67,7 @@ const Calculator = () => {
       onSubmit={onSubmit}
       initialValues={initialValues}
       render={({ handleSubmit }) => (
-        <form className={classes.form} onSubmit={handleSubmit} onChange={handleFieldChange}>
+        <form className={cn(classes.form, {[classes.hidden]: !isShown})} onSubmit={handleSubmit} onChange={handleFieldChange}>
           <fieldset className={classes.fieldset}>
             <legend className={classes.legend}>Exposure time calculator</legend>
             {
