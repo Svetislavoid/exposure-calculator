@@ -1,0 +1,28 @@
+.table {
+  border-collapse: collapse;
+  border: 2px solid rgb(140 140 140);
+}
+
+.caption {
+  caption-side: bottom;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.table thead {
+  background-color: rgb(228 240 245);
+}
+
+.table th,
+.table td {
+  border: 1px solid rgb(160 160 160);
+  padding: 8px 10px;
+}
+
+.table td:last-of-type {
+  text-align: center;
+}
+
+.table tbody > tr:nth-of-type(even) {
+  background-color: rgb(237 238 242);
+}
