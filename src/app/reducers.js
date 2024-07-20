@@ -4,6 +4,7 @@ export const reducers = createSlice({
   name: 'global',
   initialState: {
     isModalShown: false,
+    isAboutPage: false,
     showResult: false
   },
   reducers: {
@@ -17,11 +18,14 @@ export const reducers = createSlice({
     },
     toggleResult: (state) => {
       state.showResult = !state.showResult
+    },
+    toggleAboutPage: (state) => {
+      state.isAboutPage = !state.isAboutPage
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { toggleModal, toggleResult } = reducers.actions;
+export const { toggleModal, toggleResult, toggleAboutPage } = reducers.actions;
 
 export default reducers.reducer;

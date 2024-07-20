@@ -1,0 +1,10 @@
+.appAbout {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.formula {
+  margin: 10px 0;
+  align-self: center;
+}
