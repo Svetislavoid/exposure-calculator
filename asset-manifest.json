@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/exposure-calculator-react/static/css/main.4564ed05.css",
-    "main.js": "/exposure-calculator-react/static/js/main.d7ff56e2.js",
+    "main.css": "/exposure-calculator-react/static/css/main.2c2a12e7.css",
+    "main.js": "/exposure-calculator-react/static/js/main.c8c16abd.js",
     "static/js/453.d4ea200a.chunk.js": "/exposure-calculator-react/static/js/453.d4ea200a.chunk.js",
     "static/media/AobColor.png": "/exposure-calculator-react/static/media/AobColor.da6ec008f9ecc59b61fb.png",
     "index.html": "/exposure-calculator-react/index.html",
-    "main.4564ed05.css.map": "/exposure-calculator-react/static/css/main.4564ed05.css.map",
-    "main.d7ff56e2.js.map": "/exposure-calculator-react/static/js/main.d7ff56e2.js.map",
+    "main.2c2a12e7.css.map": "/exposure-calculator-react/static/css/main.2c2a12e7.css.map",
+    "main.c8c16abd.js.map": "/exposure-calculator-react/static/js/main.c8c16abd.js.map",
     "453.d4ea200a.chunk.js.map": "/exposure-calculator-react/static/js/453.d4ea200a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.4564ed05.css",
-    "static/js/main.d7ff56e2.js"
+    "static/css/main.2c2a12e7.css",
+    "static/js/main.c8c16abd.js"
   ]
 }
