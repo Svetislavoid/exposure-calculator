@@ -1,5 +1,6 @@
 import { TELESCOPES, CAMERAS, BANDS } from '../utils/params';
 import classes from './Parameters.module.css';
+import { v4 as uuidv4 } from 'uuid';
 
 const Parameters = () => {
 
@@ -20,7 +21,7 @@ const Parameters = () => {
         <tbody>
           {
             Object.entries(TELESCOPES).map(([key, value]) => (
-              <tr>
+              <tr key={uuidv4()}>
                 <th scope="row">{`${value.label} (${key})`}</th>
                 <td>{value.diameter}</td>
                 <td>{value.focalLength}</td>
@@ -45,7 +46,7 @@ const Parameters = () => {
         <tbody>
           {
             Object.entries(CAMERAS).map(([key, value]) => (
-              <tr>
+              <tr key={uuidv4()}>
                 <th scope="row">{value.label}</th>
                 <td>{value.dc}</td>
                 <td>{value.ro}</td>
@@ -64,7 +65,7 @@ const Parameters = () => {
           <th scope="col">Wavelength (nm)</th>
           {
             Object.entries(CAMERAS).map(([key, value]) => (
-              <th scope="col">{value.label} (%)</th>
+              <th scope="col" key={uuidv4()}>{value.label} (%)</th>
             ))
           }
         </tr>
@@ -80,11 +81,11 @@ const Parameters = () => {
 
               return acc;              
             }, {})).map(([key, values]) => {
-              return <tr>
+              return <tr key={uuidv4()}>
                 <th scope="row">{key}</th>
                 {
                   values.map((value) => (
-                    <td>{Math.round(value * 100)}</td>
+                    <td key={uuidv4()}>{Math.round(value * 100)}</td>
                   ))
                 }
               </tr>
@@ -109,7 +110,7 @@ const Parameters = () => {
         <tbody>
           {
             Object.entries(BANDS).map(([key, value]) => (
-              <tr>
+              <tr key={uuidv4()}>
                 <th scope="row">{key}</th>
                 <td>{value.wavelength}</td>
                 <td>{value.bandwidth}</td>
