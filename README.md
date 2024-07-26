@@ -23,23 +23,25 @@ When using custom CCD, to get the best results enter quantum efficiency of the C
 
 Calculator uses the following signal-to-noise ratio (SNR) formula:
 
-![Signal to noise ratio](/src/img/snr.png)
+$$SNR = \frac{S_{sig}t}{\sqrt{S_{sig}t + S_{sky}tn + S_{dc}tn + S^2_{ro}n}}$$
 
 from which we get the following for the exposure time:
 
-![Exposure time](/src/img/exposure.png)
+$$t = \frac{SNR^2 (S_{sig} + S_{sky}n + S_{dc}n) + \sqrt{SNR^4 (S_{sig} + S_{sky}n + S_{dc}n)^2 + 4S_{sig}^2 SNR^2 S_{ro}^2n}}{2S_{sig}^2}$$
 
-where S<sub>dc</sub> and S<sub>ro</sub> are camera dark current and read out noise values, respectively.
+where $S_{dc}$ and $S_{ro}$ are camera dark current and read out noise values, respectively.
 
 Counts from the object, counts from the sky and number of pixels in the aperture are calculated as:
 
-![Counts from the object](/src/img/objectSignal.png)
-![Counts from the sky](/src/img/skySignal.png)
-![Number of pixels in the aperture](/src/img/pixelNo.png)
+$$S_{sig} = 10^{-\frac{mag + airmass \times extCoeff}{2.5}} \times zeroMagnitudeFlux \times totalTransparency \times effectiveTelescopeArea \times QE \times bandwidth$$
+
+$$S_{sky} = 10^{-\frac{mag_s + airmass \times extCoeff}{2.5}} \times zeroMagnitudeFlux \times totalTransparency \times effectiveTelescopeArea \times QE \times bandwidth \times scale$$
+
+$$n = \pi \left(\frac{radius['']}{scale}\right)^2$$
 
 where
 
-![Camera resolution](/src/img/scale.png)
+$$scale \left[ \frac{''}{pix} \right] = \frac{206265[''] \times pxSize[m]}{focalLength[m]}$$
 
 is camera resolution.
 
