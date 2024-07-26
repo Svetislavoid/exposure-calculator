@@ -77,6 +77,5 @@ h6 {
 label + * {
   width: 30%;
   min-width: 30%;
-  padding-left: 10px;
   align-self: center;
 }

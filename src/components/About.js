@@ -60,11 +60,11 @@ const About = ({ isShown }) => {
 
         <h4>Calculations</h4>
 
-        <p>Calculator uses the following equation to calculate signal-to-noise ratio (SNR):</p>
+        <p>Calculator uses the following signal-to-noise ratio (SNR) formula:</p>
 
         <MathJax hideUntilTypeset={"first"}>{snrFormula}</MathJax>
 
-        <p>From this equation we get an expression for exposure time:</p>
+        <p>from which we get the following for the exposure time:</p>
 
         <MathJax hideUntilTypeset={"first"}>{exposureFormula}</MathJax>
 
