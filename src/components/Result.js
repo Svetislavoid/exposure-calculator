@@ -19,6 +19,9 @@ const Result = ({fieldsValues}) => {
     bands: BANDS
   });
   const { signalToNoise } = fieldsValues;
+  const canvasWidthHeightRatio = 592 / 435;
+  const canvasWidth = window.innerWidth > 700 ? 592 : window.innerWidth * 0.7;
+  const canvasHeight = window.innerWidth > 700 ? 435 : canvasWidth / canvasWidthHeightRatio;
 
   const toggleGraph = () => {
     setIsGraphShown((isGraphShown) => !isGraphShown);
@@ -71,8 +74,8 @@ const Result = ({fieldsValues}) => {
           isGraphShown &&
           <div className={classes.graph}>
             <Canvas
-              width="592"
-              height="435"
+              width={canvasWidth}
+              height={canvasHeight}
               signalToNoise={signalToNoise}
               exposureTime={exposureTime}
               signal={signal}

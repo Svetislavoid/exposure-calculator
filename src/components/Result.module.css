@@ -4,6 +4,7 @@
 
 .resultWrapper {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .resultWrapper p {
