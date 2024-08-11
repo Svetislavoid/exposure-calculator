@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/exposure-calculator-react/static/css/main.7b408fcf.css",
-    "main.js": "/exposure-calculator-react/static/js/main.1a4c2f3e.js",
-    "static/js/453.d4ea200a.chunk.js": "/exposure-calculator-react/static/js/453.d4ea200a.chunk.js",
-    "static/media/AobColor.png": "/exposure-calculator-react/static/media/AobColor.da6ec008f9ecc59b61fb.png",
-    "index.html": "/exposure-calculator-react/index.html",
-    "main.7b408fcf.css.map": "/exposure-calculator-react/static/css/main.7b408fcf.css.map",
-    "main.1a4c2f3e.js.map": "/exposure-calculator-react/static/js/main.1a4c2f3e.js.map",
-    "453.d4ea200a.chunk.js.map": "/exposure-calculator-react/static/js/453.d4ea200a.chunk.js.map"
+    "main.css": "/exposure-calculator/static/css/main.7b408fcf.css",
+    "main.js": "/exposure-calculator/static/js/main.551af840.js",
+    "static/js/453.787185b0.chunk.js": "/exposure-calculator/static/js/453.787185b0.chunk.js",
+    "static/media/AobColor.png": "/exposure-calculator/static/media/AobColor.da6ec008f9ecc59b61fb.png",
+    "index.html": "/exposure-calculator/index.html",
+    "main.7b408fcf.css.map": "/exposure-calculator/static/css/main.7b408fcf.css.map",
+    "main.551af840.js.map": "/exposure-calculator/static/js/main.551af840.js.map",
+    "453.787185b0.chunk.js.map": "/exposure-calculator/static/js/453.787185b0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7b408fcf.css",
-    "static/js/main.1a4c2f3e.js"
+    "static/js/main.551af840.js"
   ]
 }
