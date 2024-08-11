@@ -550,7 +550,7 @@ const drawHelpLines = ({
   context.moveTo(0, signalToNoise * scaleY - 1);
   context.lineTo(width, signalToNoise * scaleY - 1);
   context.moveTo(exposureTime * scaleX - 1, 0);
-  context.lineTo(exposureTime * scaleX - 1, width);
+  context.lineTo(exposureTime * scaleX - 1, height);
 
   context.stroke();
   context.closePath();
