@@ -150,6 +150,102 @@ export const formatExposureTime = (exposureTime) => {
   return secondsToTime(Math.round(exposureTime));
 };
 
+const logValues = ({
+  diameter,
+  focalLength,
+  effectiveArea,
+  telescopeArea,
+  wavelength,
+  bandwidth,
+  photonFlux,
+  extinctionCoefficient,
+  darkCurrent,
+  readOutNoise,
+  pixelSize,
+  quantumEfficiency,
+  resolution,
+  numberOfPixels,
+  fractionInside,
+  signal,
+  sky,
+  exposure
+}) => {
+  console.table({
+    'telescope diameter (m)': {
+      label: 'd',
+      value: diameter
+    },
+    'telescope focal length (m)': {
+      label: 'f',
+      value: focalLength
+    },
+    'telescope effective area coefficient': {
+      label: 'C_eff',
+      value: effectiveArea
+    },
+    'telescope effective area (m^2)': {
+      label: 'A_eff',
+      value: telescopeArea
+    },
+    'filter wavelength (Å)': {
+      label: 'λ',
+      value: wavelength
+    },
+    'filter bandwidth (Å)': {
+      label: 'Δλ',
+      value: bandwidth
+    },
+    'filter photon flux (photons * 10000)': {
+      label: 'Φ_p',
+      value: photonFlux
+    },
+    'filter extinction coefficient (mag/airmass)': {
+      label: 'C_ext',
+      value: extinctionCoefficient
+    },
+    'camera dark current (e/px/s)': {
+      label: 'S_dc',
+      value: darkCurrent
+    },
+    'camera read-out noise (e)': {
+      label: 'S_ro',
+      value: readOutNoise
+    },
+    'camera pixel size (µm)': {
+      label: 'l_x',
+      value: pixelSize
+    },
+    'camera quantum efficiency': {
+      label: 'q',
+      value: quantumEfficiency
+    },
+    'camera resolution ("/px)': {
+      label: 'R',
+      value: resolution
+    },
+    'number of pixels': {
+      label: 'n',
+      value: numberOfPixels
+    },
+    'fraction of light within the aperture': {
+      label: 'c',
+      value: fractionInside
+    },
+    'counts from the object': {
+      label: 'S_sig',
+      value: signal
+    },
+    'counts from the sky': {
+      label: 'S_sky',
+      value: sky
+    },
+    'exposure time (s)': {
+      label: 't',
+      value: exposure
+    }
+  });
+};
+
 export const calculateExposureTime = ({ fieldsValues, telescopes, cameras, bands }) => {
   const {
     object,
@@ -203,22 +299,45 @@ export const calculateExposureTime = ({ fieldsValues, telescopes, cameras, bands
   const pixelSize = ccd === CUSTOM ? customPixelSize : cameras[ccd].pxSize;
   const quantumEfficiency = ccd === CUSTOM ? customQuantumEfficiency : getQE(wavelength, cameras[ccd].qe);
 
-  const resolution = (binningValue * pixelSize * 206265 / focalLength).toFixed(2);
-  const numberOfPixels = object === 'point' ? (Math.pow(aperture / resolution, 2) * Math.PI).toFixed(2) : 1; // should it be the other way around?
+  const resolution = parseFloat((binningValue * pixelSize * 206265 / focalLength).toFixed(2));
+  const numberOfPixels = object === 'point' ? parseFloat((Math.pow(aperture / resolution, 2) * Math.PI).toFixed(2)) : 1; // should it be the other way around?
   const telescopeArea = Math.pow(diameter, 2) * Math.PI / 4 * effectiveArea;
 
   const magAirExtCoeff = magnitude + airmass * extinctionCoefficient;
   const flTelTransQeBw = photonFlux * telescopeArea * transparency * quantumEfficiency * bandwidth;
 
+  const fractionInside = fractionInsideSlow(seeing, aperture, resolution);
+
   const signal = object === 'point' ?
-    Math.pow(10, -1 * (magAirExtCoeff) / 2.5) * flTelTransQeBw * fractionInsideSlow(seeing, aperture, resolution) :
-    Math.pow(10, -1 * (magAirExtCoeff) / 2.5) * flTelTransQeBw * Math.pow(resolution, 2) * fractionInsideSlow(seeing, aperture, resolution);
+    Math.pow(10, -1 * (magAirExtCoeff) / 2.5) * flTelTransQeBw * fractionInside :
+    Math.pow(10, -1 * (magAirExtCoeff) / 2.5) * flTelTransQeBw * Math.pow(resolution, 2) * fractionInside;
   const sky = Math.pow(10, -1 * skyBrightness / 2.5) * flTelTransQeBw * Math.pow(resolution, 2);
 
   const sigSkyDc = signal + (sky + darkCurrent) * numberOfPixels;
   const rootPart = Math.sqrt(Math.pow(signalToNoise, 4) * Math.pow((sigSkyDc), 2) + 4 * Math.pow(signal * signalToNoise * readOutNoise, 2) * numberOfPixels);
 
-  const exposure = ((Math.pow(signalToNoise, 2) * (sigSkyDc) + rootPart) / (2 * Math.pow(signal, 2))).toFixed(2);
+  const exposure = parseFloat(((Math.pow(signalToNoise, 2) * (sigSkyDc) + rootPart) / (2 * Math.pow(signal, 2))).toFixed(2));
+
+  logValues({
+    diameter,
+    focalLength,
+    effectiveArea,
+    telescopeArea,
+    wavelength,
+    bandwidth,
+    photonFlux,
+    extinctionCoefficient,
+    darkCurrent,
+    readOutNoise,
+    pixelSize,
+    quantumEfficiency,
+    resolution,
+    numberOfPixels,
+    fractionInside,
+    signal,
+    sky,
+    exposure
+  });
 
   return { exposure, signal, sky, numberOfPixels, darkCurrent, readOutNoise };
 };
