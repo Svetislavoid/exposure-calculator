@@ -50,7 +50,7 @@ const Parameters = () => {
                 <th scope="row">{value.label}</th>
                 <td>{value.dc}</td>
                 <td>{value.ro}</td>
-                <td>{value.pxSize}</td>
+                <td>{value.pxSize * 1000000}</td>
               </tr>
             ))
           }

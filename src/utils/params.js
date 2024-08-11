@@ -113,7 +113,7 @@ export const CAMERAS = {
     label: 'SBIG STXL-6303E',
     dc: 0.5,
     ro: 15,
-    pxSize: 9,
+    pxSize: 9e-6,
     qe: {
       '0': 0.68, // peak QE
       '300': 0.62,
@@ -159,7 +159,7 @@ export const CAMERAS = {
     label: 'ProLine PL23042',
     dc: 0.2,
     ro: 13,
-    pxSize: 15,
+    pxSize: 15e-6,
     qe: {
       '0': 0.93, // peak QE
       '300': 0.08,

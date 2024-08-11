@@ -139,7 +139,7 @@ const secondsToTime = (secs, graphLabels) => {
 };
 
 export const formatExposureTime = (exposureTime) => {
-  if (exposureTime <= 20) {
+  if (exposureTime <= 60) {
     return `${exposureTime}s`;
   }
 

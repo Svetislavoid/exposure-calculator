@@ -211,7 +211,7 @@ export const formFields = [
   {
     name: 'signalToNoise',
     component: 'input',
-    label: 'S/N:',
+    label: 'S/N ratio:',
     validation: composeValidators(required, mustBeNumber, minValue(0))
   }
 ];

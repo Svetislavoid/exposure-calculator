@@ -11,9 +11,9 @@ This calculator is made primarily for planning observations at the [Astronomical
 
 ## How to use
 
-In the form, instruments currently available at the AS Vidojevica can be chosen. Total throughput over all reflective and refractive optical surfaces in the telescope along with the transmission of the chosen filter should be calculated separately and entered in the 'Total transparency' field. The atmosphere transmission coefficient should also be calculated independently of the calculator and entered in the 'Sky transparency' field.
+In the form, instruments currently available at the AS Vidojevica can be chosen. Total throughput over all reflective and refractive optical surfaces in the telescope, along with the transmission of the chosen filter, should be calculated separately and entered in the 'Total transparency' field. The atmosphere transmission coefficient should also be calculated independently of the calculator and entered in the 'Sky transparency' field.
 
-Calculator can also be used with some custom instruments and options, and not only those listed in the dropdown menus. In order to do that, choose 'Custom' option from the dropdown menu.
+Calculator can also be used with some custom instruments and options and not only those listed in the dropdown menus. In order to do that, choose 'Custom' option from the dropdown menu and additional input fields will be shown.
 
 When using custom telescope, telescope effective area can be omitted, in which case a default value of 100% will be used.
 
@@ -21,29 +21,69 @@ When using custom CCD, to get the best results enter quantum efficiency of the C
 
 ## Calculations
 
-Calculator uses the following signal-to-noise ratio (SNR) formula:
+The following notation is used in the formulas below:
+
+$d$ – telescope diameter
+
+$f$ – telescope focal length
+
+$A_{eff}$ – telescope effective area
+
+$C_{eff}$ – telescope effective area coefficient
+
+$\Phi_{p}$ – filter photon flux
+
+$\Delta\lambda$ – filter bandwidth
+
+$C_{ext}$ – filter extinction coefficient
+
+$q$ – camera quantum efficiency at a wavelength of selected filter
+
+$l_{px}$ – camera pixel size
+
+$R$ – camera resolution
+
+$S_{dc}$ – camera dark current
+
+$S_{ro}$ – camera read-out noise
+
+$T$ – total transparency on all optical elements
+
+$b$ – binning
+
+$r$ – aperture (photometry radius)
+
+$m$ – magnitude of the observed object
+
+$m_s$ – magnitude of the sky (sky brightness)
+
+$a$ – airmass
+
+$c$ – a percentage of light from the object that falls within the aperture (dependant on the aperture and seeing)
+
+Starting with the signal-to-noise ratio (SNR) formula::
 
 $$SNR = \frac{S_{sig}t}{\sqrt{S_{sig}t + S_{sky}tn + S_{dc}tn + S^2_{ro}n}}$$
 
-from which we get the following for the exposure time:
+we get that the exposure time can be calculated as:
 
 $$t = \frac{SNR^2 (S_{sig} + S_{sky}n + S_{dc}n) + \sqrt{SNR^4 (S_{sig} + S_{sky}n + S_{dc}n)^2 + 4S_{sig}^2 SNR^2 S_{ro}^2n}}{2S_{sig}^2}$$
 
-where $S_{dc}$ and $S_{ro}$ are camera dark current and read out noise values, respectively.
+Counts from the object (point and extended), counts from the sky and number of pixels in the aperture are calculated as:
 
-Counts from the object, counts from the sky and number of pixels in the aperture are calculated as:
+$$S^p_{sig} = 10^{-\frac{m + a \cdot C_{ext}}{2.5}} \cdot \Phi_{p} \cdot T \cdot A_{eff} \cdot q \cdot \Delta\lambda \cdot c$$
 
-$$S_{sig} = 10^{-\frac{mag + airmass \times extCoeff}{2.5}} \times zeroMagnitudeFlux \times totalTransparency \times effectiveTelescopeArea \times QE \times bandwidth$$
+$$S^e_{sig} = 10^{-\frac{m + a \cdot C_{ext}}{2.5}} \cdot \Phi_{p} \cdot T \cdot A_{eff} \cdot q \cdot \Delta\lambda \cdot R^2 \cdot c$$
 
-$$S_{sky} = 10^{-\frac{mag_s + airmass \times extCoeff}{2.5}} \times zeroMagnitudeFlux \times totalTransparency \times effectiveTelescopeArea \times QE \times bandwidth \times scale$$
+$$S_{sky} = 10^{-\frac{m_s}{2.5}} \cdot \Phi_{p} \cdot T \cdot A_{eff} \cdot q \cdot \Delta\lambda \cdot R^2$$
 
-$$n = \pi \left(\frac{radius['']}{scale}\right)^2$$
+$$n = \pi \left(\frac{r['']}{R}\right)^2$$
 
-where
+Effective telescope area and camera resolution are:
 
-$$scale \left[ \frac{''}{pix} \right] = \frac{206265[''] \times pxSize[m]}{focalLength[m]}$$
+$$A_{eff} = \frac{d^2 \pi}{4} \cdot C_{eff}$$
 
-is camera resolution.
+$$R \left[ \frac{''}{pix} \right] = \frac{206265[''] \cdot l_{px}[m]}{f[m]} \cdot b$$
 
 ## Telescopes
 

@@ -12,3 +12,13 @@
 .hidden {
   display: none;
 }
+
+.notation {
+  margin-left: 50px;
+  font-style: italic;
+}
+
+.notationSymbol {
+  display: inline-block;
+  width: 50px;
+}
