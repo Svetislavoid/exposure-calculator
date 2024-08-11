@@ -1,6 +1,6 @@
 {
-  "name": "exposure-calculator-react",
-  "homepage": "http://Svetislavoid.github.io/exposure-calculator-react",
+  "name": "exposure-calculator",
+  "homepage": "http://Svetislavoid.github.io/exposure-calculator",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
